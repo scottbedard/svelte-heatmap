@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Svelte Heatmap</title>
+        <link rel="stylesheet" type="text/css" href="./dist/heatmap.css">
+    </head>
+    <body>
+        <!-- container -->
+        <div id="heatmap"></div>
+
+        <!-- sandbox -->
+        <script src="./dist/heatmap.js"></script>
+        <script>
+            new SvelteHeatmap({
+                target: document.querySelector('#heatmap'),
+                data: {
+                    world: 'xssdf'
+                }
+            });
+        </script>
+    </body>
+</html>

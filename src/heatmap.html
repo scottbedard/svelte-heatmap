@@ -1,0 +1,42 @@
+<div>
+    <h1>Hello from a svelte experiment!</h1>
+
+    <h2>The count is: <strong>{{ count }}</strong></h2>
+
+    <div class="increment">
+        <button on:click="increment()">+1</button>
+    </div>
+</div>
+
+<style>
+    h1,
+    h2,
+    .increment {
+        text-align: center;
+        padding: 12px 24px;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: 300;
+    }
+
+    h2 {
+        font-weight: 300;
+    }
+</style>
+
+<script>
+    export default {
+        data() {
+            return {
+                count: 0,
+            }
+        },
+        methods: {
+            increment() {
+                this.set({ count: this.get('count') + 1 });
+            }
+        }
+    }
+</script>

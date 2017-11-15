@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "heatmap.css",
+  "sources": [
+    "..\\src\\heatmap.html"
+  ],
+  "sourcesContent": [
+    "<div>\r\n    <h1>Hello from a svelte experiment!</h1>\r\n\r\n    <h2>The count is: <strong>{{ count }}</strong></h2>\r\n\r\n    <div class=\"increment\">\r\n        <button on:click=\"increment()\">+1</button>\r\n    </div>\r\n</div>\r\n\r\n<style>\r\n    h1,\r\n    h2,\r\n    .increment {\r\n        text-align: center;\r\n        padding: 12px 24px;\r\n    }\r\n\r\n    h1 {\r\n        font-size: 24px;\r\n        font-weight: 300;\r\n    }\r\n\r\n    h2 {\r\n        font-weight: 300;\r\n    }\r\n</style>\r\n\r\n<script>\r\n    export default {\r\n        data() {\r\n            return {\r\n                count: 0,\r\n            }\r\n        },\r\n        methods: {\r\n            increment() {\r\n                this.set({ count: this.get('count') + 1 });\r\n            }\r\n        }\r\n    }\r\n</script>\r\n"
+  ],
+  "names": [],
+  "mappings": "AAWI,4CAAE,CACF,4CAAE,CACF,4DAAW,CAAC,AACR,UAAU,CAAE,MAAM,CAClB,OAAO,CAAE,IAAI,CAAC,IAAI,AACtB,CAAC,AAED,4CAAG,CAAC,AACA,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,GAAG,AACpB,CAAC,AAED,4CAAG,CAAC,AACA,WAAW,CAAE,GAAG,AACpB,CAAC"
+}
