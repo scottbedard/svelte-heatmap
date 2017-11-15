@@ -1,41 +1,54 @@
 <div>
-    <h1>Hello from a svelte experiment!</h1>
-
-    <h2>The count is: <strong>{{ count }}</strong></h2>
-
-    <div class="increment">
-        <button on:click="increment()">+1</button>
-    </div>
+    <h1>svelte-heatmap</h1>
 </div>
 
-<style>
-    h1,
-    h2,
-    .increment {
-        text-align: center;
-        padding: 12px 24px;
-    }
-
-    h1 {
-        font-size: 24px;
-        font-weight: 300;
-    }
-
-    h2 {
-        font-weight: 300;
-    }
-</style>
-
 <script>
+    import { warn } from './utils/log';
+
     export default {
-        data() {
-            return {
-                count: 0,
-            }
+        oncreate () {
+            this.validateHistory();
         },
         methods: {
-            increment() {
-                this.set({ count: this.get('count') + 1 });
+            validateHistory() {
+                const history = this.get('history');
+
+                // make sure history is present
+                if (typeof history === 'undefined') {
+                    warn('Missing required "history" prop.');
+                    return false;
+                }
+
+                // make sure the history is an array
+                if (!Array.isArray(history)) {
+                    warn('History must be an array.');
+                    return false;
+                }
+
+                // make sure each item in the history is valid
+                for (let item of history) {
+
+                    // items must be objects
+                    if (typeof item !== 'object' || Array.isArray(item)) {
+                        warn('All history items must be objects with "date" and "value" properties.');
+                        return false;
+                    }
+
+                    // items must have valid dates
+                    if (typeof item.date !== 'string' || !item.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                        warn(`Invalid history date. Expected YYYY-MM-DD string, got ${item.date}.`);
+                        return false;
+                    }
+
+                    // items must have a valid value
+                    if (typeof item.value !== 'number' || item.value < 0 || item.value === Infinity) {
+                        warn(`Invalid history value. Expected positive number, got ${item.value}.`);
+                        return false;
+                    }
+                }
+
+                // finally, if we made it this far we know everything is valid
+                return true;
             }
         }
     }

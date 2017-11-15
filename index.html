@@ -11,10 +11,26 @@
         <!-- sandbox -->
         <script src="./dist/heatmap.js"></script>
         <script>
+            // generate a years worth of dummy data
+            var data = [];
+            var date = new Date();
+            var min = 0;
+            var max = 100;
+
+            for (let i = 0; i < 365; i++) {
+                data.push({
+                    date: date.toISOString().slice(0, 10),
+                    value: Math.round(Math.random() * (max - min) + min),
+                });
+
+                date.setDate(date.getDate() - 1);
+            }
+
+            // instantiate a heatmap component and mount it to the dom
             new SvelteHeatmap({
                 target: document.querySelector('#heatmap'),
                 data: {
-                    world: 'xssdf'
+                    history: data,
                 }
             });
         </script>

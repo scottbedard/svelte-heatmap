@@ -14,6 +14,7 @@ const plugins = [
 	babel({
 		exclude: 'node_modules/**',
 		include: './src/**/*.js',
+		plugins: ['external-helpers'],
 	}),
 ];
 
