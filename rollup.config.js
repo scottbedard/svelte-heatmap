@@ -1,5 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
+import istanbul from 'rollup-plugin-istanbul';
 import pkg from './package.json';
 import resolve from 'rollup-plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
@@ -17,6 +18,15 @@ const plugins = [
 		plugins: ['external-helpers'],
 	}),
 ];
+
+if (process.env.NODE_ENV === 'test') {
+	plugins.push(istanbul({
+        exclude: [
+            'test/**/*',
+            'node_modules/**/*',
+        ] ,
+    }));
+}
 
 export default [
 	// Browser friendly UMD build.

@@ -27,6 +27,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
     "browser-env": "^3.2.2",
     "chai": "^4.1.2",
@@ -37,6 +38,7 @@
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-istanbul": "^1.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-svelte": "^3.1.0",
     "sinon": "^4.1.2"
