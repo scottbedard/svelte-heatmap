@@ -6,21 +6,21 @@ import resolve from 'rollup-plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
 
 const plugins = [
-	svelte({
-		css: function (css) {
-			css.write('dist/heatmap.css');
-		},
-		include: './src/**/*.html',
-	}),
-	babel({
-		exclude: 'node_modules/**',
-		include: './src/**/*.js',
-		plugins: ['external-helpers'],
-	}),
+    svelte({
+        css: function (css) {
+            css.write('dist/heatmap.css');
+        },
+        include: './src/**/*.html',
+    }),
+    babel({
+        exclude: 'node_modules/**',
+        include: './src/**/*.js',
+        plugins: ['external-helpers'],
+    }),
 ];
 
 if (process.env.NODE_ENV === 'test') {
-	plugins.push(istanbul({
+    plugins.push(istanbul({
         exclude: [
             'test/**/*',
             'node_modules/**/*',
@@ -29,28 +29,28 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 export default [
-	// Browser friendly UMD build.
-	{
-		input: 'src/main.js',
-		output: {
-			file: pkg.browser,
-			format: 'umd',
-		},
-		name: 'SvelteHeatmap',
-		plugins: [
-			resolve(),
-			commonjs(),
-		].concat(plugins),
-	},
+    // Browser friendly UMD build.
+    {
+        input: 'src/main.js',
+        output: {
+            file: pkg.browser,
+            format: 'umd',
+        },
+        name: 'SvelteHeatmap',
+        plugins: [
+            resolve(),
+            commonjs(),
+        ].concat(plugins),
+    },
 
-	// CommonJS (for Node) and ES module (for bundlers) build
-	{
-		input: 'src/main.js',
-		external: ['ms'],
-		output: [
-			{ file: pkg.main, format: 'cjs' },
-			{ file: pkg.module, format: 'es' }
-		],
+    // CommonJS (for Node) and ES module (for bundlers) build
+    {
+        input: 'src/main.js',
+        external: ['ms'],
+        output: [
+            { file: pkg.main, format: 'cjs' },
+            { file: pkg.module, format: 'es' }
+        ],
         plugins: plugins,
-	}
+    },
 ];
