@@ -11,7 +11,11 @@
 
     export default {
         oncreate () {
-            this.validateHistory();
+            try {
+                this.validateHistory()
+            } catch (err) {
+                warn(err);
+            }
         },
         computed: {
             normalizedHistory: history => normalize(history || []),
@@ -22,14 +26,12 @@
 
                 // make sure history is present
                 if (typeof history === 'undefined') {
-                    warn('Missing required "history" prop.');
-                    return false;
+                    throw 'Missing required "history" prop.';
                 }
 
                 // make sure the history is an array
                 if (!Array.isArray(history)) {
-                    warn('History must be an array.');
-                    return false;
+                    throw 'History must be an array.';
                 }
 
                 // make sure each item in the history is valid
@@ -37,25 +39,19 @@
 
                     // items must be objects
                     if (typeof item !== 'object' || Array.isArray(item)) {
-                        warn('All history items must be objects with "date" and "value" properties.');
-                        return false;
+                        throw 'All history items must be objects with "date" and "value" properties.';
                     }
 
                     // items must have valid dates
                     if (typeof item.date !== 'string' || !item.date.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
-                        warn(`Invalid history date. Expected YYYY/MM/DD string, got ${item.date}.`);
-                        return false;
+                        throw `Invalid history date. Expected YYYY/MM/DD string, got ${item.date}.`;
                     }
 
                     // items must have a valid value
                     if (typeof item.value !== 'number' || item.value < 0 || item.value === Infinity) {
-                        warn(`Invalid history value. Expected positive number, got ${item.value}.`);
-                        return false;
+                        throw `Invalid history value. Expected positive number, got ${item.value}.`
                     }
                 }
-
-                // finally, if we made it this far we know everything is valid
-                return true;
             }
         }
     }
