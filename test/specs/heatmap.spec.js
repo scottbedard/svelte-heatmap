@@ -103,4 +103,11 @@ describe('heatmap', () => {
             warn.restore();
         });
     });
+
+    //
+    // output
+    //
+    describe('output', () => {
+        it('fills gaps between missing days');
+    });
 });

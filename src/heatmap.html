@@ -1,13 +1,20 @@
 <div>
     <h1>svelte-heatmap</h1>
+    {{#each normalizedHistory as date}}
+        <pre>{{ JSON.stringify(date) }}</pre>
+    {{/each}}
 </div>
 
 <script>
     import { warn } from './utils/log';
+    import { normalize } from './utils/history';
 
     export default {
         oncreate () {
             this.validateHistory();
+        },
+        computed: {
+            normalizedHistory: history => normalize(history || []),
         },
         methods: {
             validateHistory() {
