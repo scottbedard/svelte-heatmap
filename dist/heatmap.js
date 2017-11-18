@@ -214,8 +214,8 @@ var methods = {
             }
 
             // items must have valid dates
-            if (typeof item.date !== 'string' || !item.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
-                warn(`Invalid history date. Expected YYYY-MM-DD string, got ${item.date}.`);
+            if (typeof item.date !== 'string' || !item.date.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
+                warn(`Invalid history date. Expected YYYY/MM/DD string, got ${item.date}.`);
                 return false;
             }
 

@@ -19,7 +19,7 @@
 
             for (let i = 0; i < 365; i++) {
                 data.push({
-                    date: date.toISOString().slice(0, 10),
+                    date: date.toISOString().slice(0, 10).replace(/-/g, '/'),
                     value: Math.round(Math.random() * (max - min) + min),
                 });
 

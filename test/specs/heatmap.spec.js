@@ -50,26 +50,25 @@ describe('heatmap', () => {
             new Heatmap({ target: div(), data: { history }});
 
             expect(warn.called).to.be.true;
-            expect(warn.lastCall.args[0]).to.include('Invalid history date. Expected YYYY-MM-DD string, got undefined.');
+            expect(warn.lastCall.args[0]).to.include('Invalid history date. Expected YYYY/MM/DD string, got undefined.');
 
             warn.restore();
         });
 
         it('throws a warning if a history item has a malformed date', () => {
-            const history = [{ date: 'foo' }];
+            const history = [{ date: '1234-56-78', value: 0 }];
             const warn = sinon.stub(console, 'warn');
 
             new Heatmap({ target: div(), data: { history }});
 
             expect(warn.called).to.be.true;
-            expect(warn.lastCall.args[0]).to.include('Invalid history date. Expected YYYY-MM-DD string, got foo.');
+            expect(warn.lastCall.args[0]).to.include('Invalid history date. Expected YYYY/MM/DD string, got 1234-56-78.');
 
             warn.restore();
         });
-        //Invalid history value. Expected positive number, got
 
         it('throws a warning if a history value is not a number', () => {
-            const history = [{ date: '2017-01-01' }];
+            const history = [{ date: '2017/01/01' }];
             const warn = sinon.stub(console, 'warn');
 
             new Heatmap({ target: div(), data: { history }});
@@ -81,7 +80,7 @@ describe('heatmap', () => {
         });
 
         it('throws a warning if a history value is negative', () => {
-            const history = [{ date: '2017-01-01', value: -1 }];
+            const history = [{ date: '2017/01/01', value: -1 }];
             const warn = sinon.stub(console, 'warn');
 
             new Heatmap({ target: div(), data: { history }});
@@ -93,7 +92,7 @@ describe('heatmap', () => {
         });
 
         it('throws a warning if a history value is infinite', () => {
-            const history = [{ date: '2017-01-01', value: Infinity }];
+            const history = [{ date: '2017/01/01', value: Infinity }];
             const warn = sinon.stub(console, 'warn');
 
             new Heatmap({ target: div(), data: { history }});
