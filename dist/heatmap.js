@@ -201,20 +201,71 @@ function warn(msg) {
     console.warn('[SvelteHeatmap] ' + msg);
 }
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
-function normalize(history) {
-
-    // console.log ('sorted', history.slice(0)
-    //     .sort((a, b) => a.date > b.date));
-    //
-    // console.log('filled', history.slice(0)
-    //     .sort((a, b) => a.date > b.date)
-    //     .reduce((arr, current, i) => fillMissingDates(history, arr, current, i), []))
-
-    return history.slice(0).sort(function (a, b) {
+function normalize(hist) {
+    return hist.slice(0).sort(function (a, b) {
         return a.date > b.date;
     }).reduce(fillMissingDates, []).map(attachDayOfWeek);
+}
+
+// validate that the history prop is in the correct format
+function validate(hist) {
+    // make sure history is present
+    if (typeof hist === 'undefined') {
+        throw 'Missing required "history" prop.';
+    }
+
+    // make sure the history is an array
+    if (!Array.isArray(hist)) {
+        throw 'History must be an array.';
+    }
+
+    // make sure each item in the history is valid
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+        for (var _iterator = hist[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var item = _step.value;
+
+
+            // items must be objects
+            if ((typeof item === 'undefined' ? 'undefined' : _typeof(item)) !== 'object' || Array.isArray(item)) {
+                throw 'All history items must be objects with "date" and "value" properties.';
+            }
+
+            // items must have valid dates
+            if (typeof item.date !== 'string' || !item.date.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
+                throw 'Invalid history date. Expected YYYY/MM/DD string, got ' + item.date + '.';
+            }
+
+            // items must have a valid value
+            if (typeof item.value !== 'number' || item.value < 0 || item.value === Infinity) {
+                throw 'Invalid history value. Expected positive number, got ' + item.value + '.';
+            }
+        }
+    } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+            }
+        } finally {
+            if (_didIteratorError) {
+                throw _iteratorError;
+            }
+        }
+    }
 }
 
 // reduce function to fill the gaps between history entries
@@ -258,44 +309,9 @@ function normalizedHistory(history) {
 	return normalize(history || []);
 }
 
-var methods = {
-    validateHistory() {
-        const history = this.get('history');
-
-        // make sure history is present
-        if (typeof history === 'undefined') {
-            throw 'Missing required "history" prop.';
-        }
-
-        // make sure the history is an array
-        if (!Array.isArray(history)) {
-            throw 'History must be an array.';
-        }
-
-        // make sure each item in the history is valid
-        for (let item of history) {
-
-            // items must be objects
-            if (typeof item !== 'object' || Array.isArray(item)) {
-                throw 'All history items must be objects with "date" and "value" properties.';
-            }
-
-            // items must have valid dates
-            if (typeof item.date !== 'string' || !item.date.match(/^\d{4}\/\d{2}\/\d{2}$/)) {
-                throw `Invalid history date. Expected YYYY/MM/DD string, got ${item.date}.`;
-            }
-
-            // items must have a valid value
-            if (typeof item.value !== 'number' || item.value < 0 || item.value === Infinity) {
-                throw `Invalid history value. Expected positive number, got ${item.value}.`
-            }
-        }
-    }
-};
-
 function oncreate() {
     try {
-        this.validateHistory();
+        validate(this.get('history'));
     } catch (err) {
         warn(err);
     }
@@ -422,7 +438,7 @@ function Heatmap$1(options) {
 	}
 }
 
-assign(Heatmap$1.prototype, methods, proto);
+assign(Heatmap$1.prototype, proto);
 
 Heatmap$1.prototype._recompute = function _recompute(changed, state) {
 	if (changed.history) {
