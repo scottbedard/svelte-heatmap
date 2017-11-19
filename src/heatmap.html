@@ -1,13 +1,56 @@
-<div>
-    <h1>svelte-heatmap</h1>
-    {{#each normalizedHistory as date}}
-        <pre>{{ JSON.stringify(date) }}</pre>
-    {{/each}}
+<div class="svelte-heatmap">
+    <div class="svelte-heatmap-inner">
+        <!-- render a container for each week -->
+        {{#each groupWeeks(normalizedHistory) as week}}
+            <div class="svelte-heatmap-week">
+
+                <!-- render a container for each day -->
+                {{#each week as day}}
+                    <div class="svelte-heatmap-day">
+
+                        <!-- if the day has data, render an inner box for it -->
+                        {{#if day !== null}}
+                            <div class="svelte-heatmap-day-inner"></div>
+                        {{/if}}
+                    </div>
+                {{/each}}
+            </div>
+        {{/each}}
+    </div>
 </div>
+
+<style>
+    .svelte-heatmap {
+        display: flex;
+        justify-content: center;
+    }
+
+    .svelte-heatmap-inner {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .svelte-heatmap-week {
+        padding: 5px 0;
+    }
+
+    .svelte-heatmap-day {
+        height: 24px;
+        width: 24px;
+        padding: 3px;
+    }
+
+    .svelte-heatmap-day-inner {
+        background-color: #ccc;
+        border-radius: 3px;
+        width: 100%;
+        height: 100%;
+    }
+</style>
 
 <script>
     import { warn } from './utils/log';
-    import { normalize, validate } from './utils/history';
+    import { groupWeeks, normalize, validate } from './utils/history';
 
     export default {
         oncreate () {
@@ -19,6 +62,9 @@
         },
         computed: {
             normalizedHistory: history => normalize(history || []),
+        },
+        helpers: {
+            groupWeeks,
         },
     }
 </script>

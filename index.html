@@ -3,6 +3,11 @@
     <head>
         <title>Svelte Heatmap</title>
         <link rel="stylesheet" type="text/css" href="./dist/heatmap.css">
+        <style>
+            #heatmap {
+
+            }
+        </style>
     </head>
     <body>
         <!-- container -->
@@ -17,7 +22,7 @@
             var min = 0;
             var max = 100;
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 200; i++) {
                 data.push({
                     date: date.toISOString().slice(0, 10).replace(/-/g, '/'),
                     value: Math.round(Math.random() * (max - min) + min),

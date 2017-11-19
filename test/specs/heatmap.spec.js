@@ -108,6 +108,47 @@ describe('heatmap', () => {
     // output
     //
     describe('output', () => {
-        it('fills gaps between missing days');
+        it('renders a container for each week with child day containers', () => {
+            const el = div();
+
+            new Heatmap({
+                target: el,
+                data: {
+                    history: [
+                        { date: '2017/11/01', value: 0 },
+                        { date: '2017/11/08', value: 0 },
+                    ],
+                },
+            });
+
+            const weeks = el.querySelectorAll('.svelte-heatmap-week');
+            expect(weeks.length).to.equal(2);
+
+            // the first day of this week is a wednesday, so we should see
+            // three filler days, and 4 days with values inside of them.
+            expect(weeks[0].querySelectorAll('.svelte-heatmap-day').length).to.equal(7);
+            expect(weeks[0].querySelectorAll('.svelte-heatmap-day-inner').length).to.equal(4);
+
+            // and the second week should have the other 4 days with values
+            expect(weeks[1].querySelectorAll('.svelte-heatmap-day').length).to.equal(4);
+            expect(weeks[1].querySelectorAll('.svelte-heatmap-day-inner').length).to.equal(4);
+        });
+
+        it('fills gaps between missing days', () => {
+            const el = div();
+
+            new Heatmap({
+                target: el,
+                data: {
+                    history: [
+                        { date: '2017/11/05', value: 0 },
+                        { date: '2017/11/07', value: 0 },
+                    ],
+                },
+            });
+
+            // there should be 3 days, even though we only provided 2 data points
+            expect(el.querySelectorAll('.svelte-heatmap-day').length).to.equal(3);
+        });
     });
 });

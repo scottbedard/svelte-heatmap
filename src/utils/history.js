@@ -1,8 +1,30 @@
+// group our normalized history by week
+export function groupWeeks(normalizedHist) {
+    return normalizedHist.reduce((weeks, current) => {
+        // start a new week for the first data point and sundays
+        if (!weeks.length || !current.day) {
+            weeks.push([]);
+        }
+
+        // fill any missing days from the first week
+        if (weeks.length === 1 && weeks[0].length === 0) {
+            for (let i = 0; i < current.day; i++) {
+                weeks[0].push(null);
+            }
+        }
+
+        // and push the current data onto the last week
+        weeks[weeks.length - 1].push(current);
+
+        return weeks;
+    }, []);
+}
+
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
 export function normalize(hist) {
     return hist.slice(0)
-        .sort((a, b) => a.date > b.date)
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(fillMissingDates, [])
         .map(attachDayOfWeek);
 }
@@ -52,7 +74,6 @@ function fillMissingDates(arr, current, i, history) {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         while (getDateString(tomorrow) < next.date) {
-            console.log ('doing it', getDateString(tomorrow), next.date)
             arr.push({ date: getDateString(tomorrow), value: null });
             tomorrow.setDate(tomorrow.getDate() + 1);
         }

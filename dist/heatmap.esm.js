@@ -35,8 +35,8 @@ function createElement(name) {
 	return document.createElement(name);
 }
 
-function createText(data) {
-	return document.createTextNode(data);
+function setAttribute(node, attribute, value) {
+	node.setAttribute(attribute, value);
 }
 
 function blankObject() {
@@ -201,11 +201,33 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
+// group our normalized history by week
+function groupWeeks(normalizedHist) {
+    return normalizedHist.reduce(function (weeks, current) {
+        // start a new week for the first data point and sundays
+        if (!weeks.length || !current.day) {
+            weeks.push([]);
+        }
+
+        // fill any missing days from the first week
+        if (weeks.length === 1 && weeks[0].length === 0) {
+            for (var i = 0; i < current.day; i++) {
+                weeks[0].push(null);
+            }
+        }
+
+        // and push the current data onto the last week
+        weeks[weeks.length - 1].push(current);
+
+        return weeks;
+    }, []);
+}
+
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
 function normalize(hist) {
     return hist.slice(0).sort(function (a, b) {
-        return a.date > b.date;
+        return new Date(a.date) - new Date(b.date);
     }).reduce(fillMissingDates, []).map(attachDayOfWeek);
 }
 
@@ -275,7 +297,6 @@ function fillMissingDates(arr, current, i, history) {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         while (getDateString(tomorrow) < next.date) {
-            console.log('doing it', getDateString(tomorrow), next.date);
             arr.push({ date: getDateString(tomorrow), value: null });
             tomorrow.setDate(tomorrow.getDate() + 1);
         }
@@ -311,50 +332,58 @@ function oncreate() {
     }
 }
 
-function create_main_fragment(state, component) {
-	var div, h1, text_1;
+function encapsulateStyles(node) {
+	setAttribute(node, "svelte-2700336940", "");
+}
 
-	var normalizedHistory_1 = state.normalizedHistory;
+function create_main_fragment(state, component) {
+	var div, div_1;
+
+	var each_value = groupWeeks(state.normalizedHistory);
 
 	var each_blocks = [];
 
-	for (var i = 0; i < normalizedHistory_1.length; i += 1) {
-		each_blocks[i] = create_each_block(state, normalizedHistory_1, normalizedHistory_1[i], i, component);
+	for (var i = 0; i < each_value.length; i += 1) {
+		each_blocks[i] = create_each_block(state, each_value, each_value[i], i, component);
 	}
 
 	return {
 		c: function create() {
 			div = createElement("div");
-			h1 = createElement("h1");
-			h1.textContent = "svelte-heatmap";
-			text_1 = createText("\r\n    ");
+			div_1 = createElement("div");
 
 			for (var i = 0; i < each_blocks.length; i += 1) {
 				each_blocks[i].c();
 			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			encapsulateStyles(div);
+			div.className = "svelte-heatmap";
+			div_1.className = "svelte-heatmap-inner";
 		},
 
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
-			appendNode(h1, div);
-			appendNode(text_1, div);
+			appendNode(div_1, div);
 
 			for (var i = 0; i < each_blocks.length; i += 1) {
-				each_blocks[i].m(div, null);
+				each_blocks[i].m(div_1, null);
 			}
 		},
 
 		p: function update(changed, state) {
-			var normalizedHistory_1 = state.normalizedHistory;
+			var each_value = groupWeeks(state.normalizedHistory);
 
-			if (changed.JSON || changed.normalizedHistory) {
-				for (var i = 0; i < normalizedHistory_1.length; i += 1) {
+			if (changed.normalizedHistory) {
+				for (var i = 0; i < each_value.length; i += 1) {
 					if (each_blocks[i]) {
-						each_blocks[i].p(changed, state, normalizedHistory_1, normalizedHistory_1[i], i);
+						each_blocks[i].p(changed, state, each_value, each_value[i], i);
 					} else {
-						each_blocks[i] = create_each_block(state, normalizedHistory_1, normalizedHistory_1[i], i, component);
+						each_blocks[i] = create_each_block(state, each_value, each_value[i], i, component);
 						each_blocks[i].c();
-						each_blocks[i].m(div, null);
+						each_blocks[i].m(div_1, null);
 					}
 				}
 
@@ -362,7 +391,7 @@ function create_main_fragment(state, component) {
 					each_blocks[i].u();
 					each_blocks[i].d();
 				}
-				each_blocks.length = normalizedHistory_1.length;
+				each_blocks.length = each_value.length;
 			}
 		},
 
@@ -380,29 +409,143 @@ function create_main_fragment(state, component) {
 	};
 }
 
-// (3:4) {{#each normalizedHistory as date}}
-function create_each_block(state, normalizedHistory_1, date, date_index, component) {
-	var pre, text_value = ('JSON' in state ? state.JSON : JSON).stringify(date), text;
+// (4:8) {{#each groupWeeks(normalizedHistory) as week}}
+function create_each_block(state, each_value, week, week_index, component) {
+	var div;
+
+	var week_1 = week;
+
+	var each_blocks = [];
+
+	for (var i = 0; i < week_1.length; i += 1) {
+		each_blocks[i] = create_each_block_1(state, each_value, week, week_index, week_1, week_1[i], i, component);
+	}
 
 	return {
 		c: function create() {
-			pre = createElement("pre");
-			text = createText(text_value);
+			div = createElement("div");
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].c();
+			}
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "svelte-heatmap-week";
 		},
 
 		m: function mount(target, anchor) {
-			insertNode(pre, target, anchor);
-			appendNode(text, pre);
+			insertNode(div, target, anchor);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].m(div, null);
+			}
 		},
 
-		p: function update(changed, state, normalizedHistory_1, date, date_index) {
-			if ((changed.JSON || changed.normalizedHistory) && text_value !== (text_value = ('JSON' in state ? state.JSON : JSON).stringify(date))) {
-				text.data = text_value;
+		p: function update(changed, state, each_value, week, week_index) {
+			var week_1 = week;
+
+			if (changed.normalizedHistory) {
+				for (var i = 0; i < week_1.length; i += 1) {
+					if (each_blocks[i]) {
+						each_blocks[i].p(changed, state, each_value, week, week_index, week_1, week_1[i], i);
+					} else {
+						each_blocks[i] = create_each_block_1(state, each_value, week, week_index, week_1, week_1[i], i, component);
+						each_blocks[i].c();
+						each_blocks[i].m(div, null);
+					}
+				}
+
+				for (; i < each_blocks.length; i += 1) {
+					each_blocks[i].u();
+					each_blocks[i].d();
+				}
+				each_blocks.length = week_1.length;
 			}
 		},
 
 		u: function unmount() {
-			detachNode(pre);
+			detachNode(div);
+
+			for (var i = 0; i < each_blocks.length; i += 1) {
+				each_blocks[i].u();
+			}
+		},
+
+		d: function destroy$$1() {
+			destroyEach(each_blocks);
+		}
+	};
+}
+
+// (8:16) {{#each week as day}}
+function create_each_block_1(state, each_value, week, week_index, week_1, day, day_index, component) {
+	var div;
+
+	var if_block = (day !== null) && create_if_block(state, each_value, week, week_index, week_1, day, day_index, component);
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			if (if_block) if_block.c();
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "svelte-heatmap-day";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+			if (if_block) if_block.m(div, null);
+		},
+
+		p: function update(changed, state, each_value, week, week_index, week_1, day, day_index) {
+			if (day !== null) {
+				if (!if_block) {
+					if_block = create_if_block(state, each_value, week, week_index, week_1, day, day_index, component);
+					if_block.c();
+					if_block.m(div, null);
+				}
+			} else if (if_block) {
+				if_block.u();
+				if_block.d();
+				if_block = null;
+			}
+		},
+
+		u: function unmount() {
+			detachNode(div);
+			if (if_block) if_block.u();
+		},
+
+		d: function destroy$$1() {
+			if (if_block) if_block.d();
+		}
+	};
+}
+
+// (12:24) {{#if day !== null}}
+function create_if_block(state, each_value, week, week_index, week_1, day, day_index, component) {
+	var div;
+
+	return {
+		c: function create() {
+			div = createElement("div");
+			this.h();
+		},
+
+		h: function hydrate() {
+			div.className = "svelte-heatmap-day-inner";
+		},
+
+		m: function mount(target, anchor) {
+			insertNode(div, target, anchor);
+		},
+
+		u: function unmount() {
+			detachNode(div);
 		},
 
 		d: noop
