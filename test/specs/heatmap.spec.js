@@ -102,6 +102,23 @@ describe('heatmap', () => {
 
             warn.restore();
         });
+
+        it('throws a warning if the tooltip is not a function', () => {
+            const warn = sinon.stub(console, 'warn');
+
+            new Heatmap({
+                target: div(),
+                data: {
+                    history: [],
+                    tooltip: null,
+                },
+            });
+
+            expect(warn.called).to.be.true;
+            expect(warn.lastCall.args[0]).to.include('Invalid configuration, tooltip must be a function');
+
+            warn.restore();
+        });
     });
 
     //
@@ -149,6 +166,34 @@ describe('heatmap', () => {
 
             // there should be 3 days, even though we only provided 2 data points
             expect(el.querySelectorAll('.svelte-heatmap-day').length).to.equal(3);
+        });
+
+        it('renders a default tooltip when none is provided', () => {
+            const el = div();
+
+            new Heatmap({
+                target: el,
+                data: {
+                    history: [{ date: '2017/11/05', value: 123 }],
+                },
+            });
+
+            expect(el.querySelectorAll('.svelte-heatmap-day-tooltip').length).to.equal(1);
+            expect(el.querySelector('.svelte-heatmap-day-tooltip').textContent).to.equal('123 on 2017/11/05');
+        });
+
+        it('supports a function to customize the tooltip content', () => {
+            const el = div();
+
+            new Heatmap({
+                target: el,
+                data: {
+                    history: [{ date: '2017/11/05', value: 123 }],
+                    tooltip: (date, value) => `date: <b>${date}</b> / value: <b>${value}</b>`
+                },
+            });
+
+            expect(el.querySelector('.svelte-heatmap-day-tooltip').innerHTML).to.include('date: <b>2017/11/05</b> / value: <b>123</b>');
         });
     });
 });

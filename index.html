@@ -3,9 +3,15 @@
     <head>
         <title>Svelte Heatmap</title>
         <link rel="stylesheet" type="text/css" href="./dist/heatmap.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
         <style>
-            #heatmap {
+            body {
+                font-family: 'Open Sans', sans-serif;
+            }
 
+            #heatmap {
+                padding: 24px;
+                border: 5px dashed #ccc;
             }
         </style>
     </head>
@@ -36,6 +42,7 @@
                 target: document.querySelector('#heatmap'),
                 data: {
                     history: data,
+                    tooltip: (date, value) => `<strong>${value}</strong> contributions on ${date}`,
                 },
             });
         </script>
