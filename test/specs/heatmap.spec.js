@@ -195,5 +195,31 @@ describe('heatmap', () => {
 
             expect(el.querySelector('.svelte-heatmap-day-tooltip').innerHTML).to.include('date: <b>2017/11/05</b> / value: <b>123</b>');
         });
+
+        it('renders the correct color for each day', () => {
+            const el = div();
+
+            new Heatmap({
+                target: el,
+                data: {
+                    history: [
+                        { date: '2017/11/05', value: 0 },
+                        // omitting 2017/11/04
+                        { date: '2017/11/07', value: 1 },
+                        { date: '2017/11/08', value: 3 },
+                        { date: '2017/11/09', value: 7 },
+                        { date: '2017/11/10', value: 10 },
+                    ],
+                },
+            });
+
+            const squares = el.querySelectorAll('.svelte-heatmap-day-inner');
+            expect(squares[0].style.backgroundColor).to.equal('rgb(235, 237, 240)'); // 2017/11/05
+            expect(squares[1].style.backgroundColor).to.equal('rgb(235, 237, 240)'); // 2017/11/06
+            expect(squares[2].style.backgroundColor).to.equal('rgb(198, 228, 139)'); // 2017/11/07
+            expect(squares[3].style.backgroundColor).to.equal('rgb(123, 201, 111)'); // 2017/11/08
+            expect(squares[4].style.backgroundColor).to.equal('rgb(35, 154, 59)'); // 2017/11/09
+            expect(squares[5].style.backgroundColor).to.equal('rgb(25, 97, 39)'); // 2017/11/10
+        });
     });
 });

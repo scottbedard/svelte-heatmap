@@ -1,3 +1,5 @@
+import { attachDayColor } from './color';
+
 // group our normalized history by week
 export function groupWeeks(normalizedHist) {
     return normalizedHist.reduce((weeks, current) => {
@@ -23,10 +25,13 @@ export function groupWeeks(normalizedHist) {
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
 export function normalize(hist) {
-    return hist.slice(0)
+    const normalizedHistory = hist.slice(0)
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(fillMissingDates, [])
         .map(attachDayOfWeek);
+
+    // finally, attach a color to each piece of history
+    return attachDayColor(normalizedHistory);
 }
 
 // validate that the history prop is in the correct format
@@ -74,7 +79,7 @@ function fillMissingDates(arr, current, i, history) {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         while (getDateString(tomorrow) < next.date) {
-            arr.push({ date: getDateString(tomorrow), value: null });
+            arr.push({ date: getDateString(tomorrow), value: 0 });
             tomorrow.setDate(tomorrow.getDate() + 1);
         }
     }

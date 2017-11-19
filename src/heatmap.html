@@ -10,7 +10,7 @@
 
                         <!-- if the day has data, render an inner box for it -->
                         {{#if day !== null}}
-                            <div class="svelte-heatmap-day-inner">
+                            <div class="svelte-heatmap-day-inner" style="background-color: {{ day.color }}">
                                 <div class="svelte-heatmap-day-tooltip">
                                     {{#if typeof tooltip === 'function'}}
                                         {{{ tooltip(day.date, day.value) }}}
@@ -43,9 +43,9 @@
     }
 
     .svelte-heatmap-day {
-        height: 24px;
-        width: 24px;
+        height: 16px;
         padding: 3px;
+        width: 16px;
     }
 
     .svelte-heatmap-day-inner {
@@ -64,7 +64,7 @@
         font-size: 12px;
         left: 50%;
         opacity: 0;
-        padding: 6px;
+        padding: 10px 12px;
         pointer-events: none;
         position: absolute;
         transform: translateX(-50%) translateY(-5px);
@@ -76,9 +76,9 @@
     .svelte-heatmap-day-tooltip:after {
         border-bottom: 3px solid #333;
         border-left: 3px solid transparent;
+        border-radius: 2px;
         border-right: 3px solid #333;
         border-top: 3px solid transparent;
-        border-radius: 2px;
         bottom: 0;
         content: "";
         display: block;

@@ -49,6 +49,10 @@ function setAttribute(node, attribute, value) {
 	node.setAttribute(attribute, value);
 }
 
+function setStyle(node, key, value) {
+	node.style.setProperty(key, value);
+}
+
 function blankObject() {
 	return Object.create(null);
 }
@@ -211,6 +215,109 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
+};
+
+// for now these are just hard coded. in the future, this
+// component should accept props to calculate these.
+var colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
+
+var emptyColor = '#ebedf0';
+
+// determine what color a day is
+function attachDayColor(normalizedHistory) {
+    var max = Math.max.apply(Math, toConsumableArray(normalizedHistory.map(function (day) {
+        return day.value;
+    })));
+
+    var colorValues = colors.map(function (color, i) {
+        return { color: color, value: i / colors.length };
+    });
+
+    return normalizedHistory.map(function (day) {
+        var color = emptyColor;
+        var dayValue = day.value / max;
+
+        if (day.value) {
+            for (var i = 0, end = colorValues.length; i < end; i++) {
+                if (dayValue < colorValues[i].value) {
+                    break;
+                }
+
+                color = colorValues[i].color;
+            }
+        }
+
+        return {
+            color: color,
+            date: day.date,
+            day: day.day,
+            value: day.value
+        };
+    });
+}
+
 // group our normalized history by week
 function groupWeeks(normalizedHist) {
     return normalizedHist.reduce(function (weeks, current) {
@@ -236,9 +343,12 @@ function groupWeeks(normalizedHist) {
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
 function normalize(hist) {
-    return hist.slice(0).sort(function (a, b) {
+    var normalizedHistory = hist.slice(0).sort(function (a, b) {
         return new Date(a.date) - new Date(b.date);
     }).reduce(fillMissingDates, []).map(attachDayOfWeek);
+
+    // finally, attach a color to each piece of history
+    return attachDayColor(normalizedHistory);
 }
 
 // validate that the history prop is in the correct format
@@ -307,7 +417,7 @@ function fillMissingDates(arr, current, i, history) {
         tomorrow.setDate(tomorrow.getDate() + 1);
 
         while (getDateString(tomorrow) < next.date) {
-            arr.push({ date: getDateString(tomorrow), value: null });
+            arr.push({ date: getDateString(tomorrow), value: 0 });
             tomorrow.setDate(tomorrow.getDate() + 1);
         }
     }
@@ -351,7 +461,7 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-4059374734", "");
+	setAttribute(node, "svelte-2137778287", "");
 }
 
 function create_main_fragment(state, component) {
@@ -634,6 +744,7 @@ function create_if_block(state, each_value, week, week_index, week_1, day, day_i
 
 		h: function hydrate() {
 			div.className = "svelte-heatmap-day-inner";
+			setStyle(div, "background-color", day.color);
 			div_1.className = "svelte-heatmap-day-tooltip";
 		},
 
@@ -644,6 +755,10 @@ function create_if_block(state, each_value, week, week_index, week_1, day, day_i
 		},
 
 		p: function update(changed, state, each_value, week, week_index, week_1, day, day_index) {
+			if (changed.normalizedHistory) {
+				setStyle(div, "background-color", day.color);
+			}
+
 			if (current_block_type === (current_block_type = select_block_type(state, each_value, week, week_index, week_1, day, day_index)) && if_block) {
 				if_block.p(changed, state, each_value, week, week_index, week_1, day, day_index);
 			} else {
