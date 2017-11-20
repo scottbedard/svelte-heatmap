@@ -9,10 +9,6 @@
 
 https://scottbedard.net/svelte-heatmap
 
-<p style="text-align:center">
-    <img src="https://user-images.githubusercontent.com/7980426/33039711-1d483760-cdf6-11e7-83ca-cb4275edc314.png" />
-</p>
-
 ### Installation
 
 The preferred way to install this package is through Yarn or NPM.
