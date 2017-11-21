@@ -1,8 +1,6 @@
 import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
 import istanbul from 'rollup-plugin-istanbul';
 import pkg from './package.json';
-import resolve from 'rollup-plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
 
 const plugins = [
@@ -31,22 +29,18 @@ if (process.env.NODE_ENV === 'test') {
 export default [
     // Browser friendly UMD build.
     {
-        input: 'src/main.js',
+        input: 'src/heatmap.html',
         output: {
             file: pkg.browser,
             format: 'umd',
         },
         name: 'SvelteHeatmap',
-        plugins: [
-            resolve(),
-            commonjs(),
-        ].concat(plugins),
+        plugins,
     },
 
     // CommonJS (for Node) and ES module (for bundlers) build
     {
-        input: 'src/main.js',
-        external: ['ms'],
+        input: 'src/heatmap.html',
         output: [
             { file: pkg.main, format: 'cjs' },
             { file: pkg.module, format: 'es' }
