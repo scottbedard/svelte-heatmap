@@ -50,3 +50,33 @@ new SvelteHeatmap({
     },
 });
 ```
+
+### Custom colors
+
+To define a set of custom colors, simply provide an array of css colors. The `emptyColor` property will be used for days with no value.
+
+```js
+new SvelteHeatmap({
+    target: el,
+    data: {
+        colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
+        emptyColor: '#dddddd',
+        history: [],
+    },
+});
+```
+
+Alternatively, you can calculate colors on the fly using the following options. Be aware when doing this, `lowColor` and `highColor` must be 6 digit hex values (ex: `#123456`).
+
+```js
+new SvelteHeatmap({
+    target: el,
+    data: {
+        colors: 10, // <- number of colors to use
+        lowColor: '#aaaaaa', // <- color for low values
+        highColor: '#000000', // <- color for high values
+        emptyColor: '#dddddd',
+        history: [],
+    },
+});
+```
