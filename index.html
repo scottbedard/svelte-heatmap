@@ -25,7 +25,7 @@
             var data = [];
             var date = new Date();
             var min = 0;
-            var max = 10;
+            var max = 100;
 
             for (let i = 0; i < 200; i++) {
                 data.push({
@@ -40,9 +40,21 @@
             new SvelteHeatmap({
                 target: document.querySelector('#heatmap'),
                 data: {
-                    colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
+                    // dynamic colors
+                    colors: 10,
+                    lowColor: '#c6e48b',
+                    highColor: '#196127',
+
+                    // explicit colors
+                    // colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
+
+                    // empty color
                     emptyColor: '#eee',
+
+                    // heatmap history
                     history: data,
+
+                    // tooltip text
                     tooltip: (date, value) => `<strong>${value}</strong> contributions on ${date}`,
                 },
             });

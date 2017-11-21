@@ -119,6 +119,63 @@ describe('heatmap', () => {
 
             warn.restore();
         });
+
+        it('throws a warning if an invalid color number is provided', () => {
+            const warn = sinon.stub(console, 'warn');
+                        
+            new Heatmap({
+                target: div(),
+                data: {
+                    colors: -6,
+                    highColor: '#000000',
+                    history: [],
+                    lowColor: '#ffffff',
+                },
+            });
+
+            expect(warn.called).to.be.true;
+            expect(warn.lastCall.args[0]).to.include('Invalid color value. Expected a whole number greater than 2, got -6');
+
+            warn.restore();
+        });
+
+        it('throws a warning if colors is a number, but lowColor is not a valid string', () => {
+            const warn = sinon.stub(console, 'warn');
+            
+            new Heatmap({
+                target: div(),
+                data: {
+                    colors: 5,
+                    highColor: '#f00000',
+                    history: [],
+                    lowColor: 'blahhhhhhh',
+                },
+            });
+
+            expect(warn.called).to.be.true;
+            expect(warn.lastCall.args[0]).to.include('Invalid lowColor. Expected 6 digit hex color, got blahhhhhhh');
+
+            warn.restore();
+        });
+
+        it('throws a warning if colors is a number, but highColor is not a valid string', () => {
+            const warn = sinon.stub(console, 'warn');
+            
+            new Heatmap({
+                target: div(),
+                data: {
+                    colors: 5,
+                    highColor: 4,
+                    history: [],
+                    lowColor: '#aabbcc',
+                },
+            });
+
+            expect(warn.called).to.be.true;
+            expect(warn.lastCall.args[0]).to.include('Invalid highColor. Expected 6 digit hex color, got 4');
+
+            warn.restore();
+        });
     });
 
     //
@@ -262,5 +319,32 @@ describe('heatmap', () => {
             expect(el.querySelector('.svelte-heatmap-day:nth-child(3) .svelte-heatmap-day-inner').style.backgroundColor)
                 .to.equal('blue'); 
         });
+
+        it('accepts a low and high color', () => {
+            const el = div();
+            
+            new Heatmap({
+                target: el,
+                data: {
+                    colors: 3,
+                    lowColor: '#000000',
+                    highColor: '#ffffff',
+                    history: [
+                        { date: '2017/11/05', value: 1 },
+                        { date: '2017/11/06', value: 2 },
+                        { date: '2017/11/07', value: 3 },
+                    ],
+                },
+            });
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(1) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('rgb(0, 0, 0)');
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(2) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('rgb(128, 128, 128)');
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(3) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('rgb(255, 255, 255)'); 
+        })
     });
 });

@@ -91,20 +91,31 @@
 
 <script>
     import { warn } from './utils/log';
-    import { groupWeeks, normalize, validate } from './utils/history';
+    import { validateColors } from './utils/color';
+    import { groupWeeks, normalize, validateHistory } from './utils/history';
 
     export default {
         data () {
             return {
                 colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
                 emptyColor: '#ebedf0',
+                highColor: null,
+                lowColor: null,
                 tooltip: (date, value) => `${value} on ${date}`,
             };
         },
         oncreate () {
             try {
+                // validate the colors that were provided
+                validateColors({
+                    colors: this.get('colors'),
+                    emptyColor: this.get('emptyColor'),
+                    highColor: this.get('highColor'),
+                    lowColor: this.get('lowColor'),
+                });
+                
                 // validate the history prop
-                validate(this.get('history'));
+                validateHistory(this.get('history'));
 
                 // validate the tooltip prop
                 const tooltip = this.get('tooltip');
@@ -117,10 +128,12 @@
             }
         },
         computed: {
-            normalizedHistory: (colors, emptyColor, history) => normalize({
+            normalizedHistory: (colors, emptyColor, highColor, history, lowColor) => normalize({
                 colors: colors,
                 emptyColor: emptyColor,
+                highColor: highColor,
                 history: history || [],
+                lowColor: lowColor,
             }),
         },
         helpers: {

@@ -34,12 +34,14 @@ export function normalize(heatmap) {
     return attachDayColor({
         colors: heatmap.colors,
         emptyColor: heatmap.emptyColor,
+        highColor: heatmap.highColor,
+        lowColor: heatmap.lowColor,
         normalizedHistory,
     });
 }
 
 // validate that the history prop is in the correct format
-export function validate(hist) {
+export function validateHistory(hist) {
     // make sure history is present
     if (typeof hist === 'undefined') {
         throw 'Missing required "history" prop.';
