@@ -27,12 +27,6 @@ function detachNode(node) {
 	node.parentNode.removeChild(node);
 }
 
-function detachBetween(before, after) {
-	while (before.nextSibling && before.nextSibling !== after) {
-		before.parentNode.removeChild(before.nextSibling);
-	}
-}
-
 function destroyEach(iterations) {
 	for (var i = 0; i < iterations.length; i += 1) {
 		if (iterations[i]) iterations[i].d();
@@ -41,10 +35,6 @@ function destroyEach(iterations) {
 
 function createElement(name) {
 	return document.createElement(name);
-}
-
-function createText(data) {
-	return document.createTextNode(data);
 }
 
 function setAttribute(node, attribute, value) {
@@ -446,6 +436,12 @@ function normalizedHistory(history) {
 	return normalize(history || []);
 }
 
+function data() {
+    return {
+        tooltip: (date, value) => `${value} on ${date}`,
+    };
+}
+
 function oncreate() {
     try {
         // validate the history prop
@@ -463,7 +459,7 @@ function oncreate() {
 }
 
 function encapsulateStyles(node) {
-	setAttribute(node, "svelte-2137778287", "");
+	setAttribute(node, "svelte-481602688", "");
 }
 
 function create_main_fragment(state, component) {
@@ -658,89 +654,14 @@ function create_each_block_1(state, each_value, week, week_index, week_1, day, d
 	};
 }
 
-// (15:36) {{#if typeof tooltip === 'function'}}
-function create_if_block_1(state, each_value, week, week_index, week_1, day, day_index, component) {
-	var raw_value = state.tooltip(day.date, day.value), raw_before, raw_after;
-
-	return {
-		c: function create() {
-			raw_before = createElement('noscript');
-			raw_after = createElement('noscript');
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(raw_before, target, anchor);
-			raw_before.insertAdjacentHTML("afterend", raw_value);
-			insertNode(raw_after, target, anchor);
-		},
-
-		p: function update(changed, state, each_value, week, week_index, week_1, day, day_index) {
-			if ((changed.tooltip || changed.normalizedHistory) && raw_value !== (raw_value = state.tooltip(day.date, day.value))) {
-				detachBetween(raw_before, raw_after);
-				raw_before.insertAdjacentHTML("afterend", raw_value);
-			}
-		},
-
-		u: function unmount() {
-			detachBetween(raw_before, raw_after);
-
-			detachNode(raw_before);
-			detachNode(raw_after);
-		},
-
-		d: noop
-	};
-}
-
-// (17:36) {{else}}
-function create_if_block_2(state, each_value, week, week_index, week_1, day, day_index, component) {
-	var text_value = day.value, text, text_1, text_2_value = day.date, text_2;
-
-	return {
-		c: function create() {
-			text = createText(text_value);
-			text_1 = createText(" on ");
-			text_2 = createText(text_2_value);
-		},
-
-		m: function mount(target, anchor) {
-			insertNode(text, target, anchor);
-			insertNode(text_1, target, anchor);
-			insertNode(text_2, target, anchor);
-		},
-
-		p: function update(changed, state, each_value, week, week_index, week_1, day, day_index) {
-			if ((changed.normalizedHistory) && text_value !== (text_value = day.value)) {
-				text.data = text_value;
-			}
-
-			if ((changed.normalizedHistory) && text_2_value !== (text_2_value = day.date)) {
-				text_2.data = text_2_value;
-			}
-		},
-
-		u: function unmount() {
-			detachNode(text);
-			detachNode(text_1);
-			detachNode(text_2);
-		},
-
-		d: noop
-	};
-}
-
 // (12:24) {{#if day !== null}}
 function create_if_block(state, each_value, week, week_index, week_1, day, day_index, component) {
-	var div, div_1;
-
-	var current_block_type = select_block_type(state, each_value, week, week_index, week_1, day, day_index);
-	var if_block = current_block_type(state, each_value, week, week_index, week_1, day, day_index, component);
+	var div, div_1, raw_value = state.tooltip(day.date, day.value);
 
 	return {
 		c: function create() {
 			div = createElement("div");
 			div_1 = createElement("div");
-			if_block.c();
 			this.h();
 		},
 
@@ -753,7 +674,7 @@ function create_if_block(state, each_value, week, week_index, week_1, day, day_i
 		m: function mount(target, anchor) {
 			insertNode(div, target, anchor);
 			appendNode(div_1, div);
-			if_block.m(div_1, null);
+			div_1.innerHTML = raw_value;
 		},
 
 		p: function update(changed, state, each_value, week, week_index, week_1, day, day_index) {
@@ -761,36 +682,24 @@ function create_if_block(state, each_value, week, week_index, week_1, day, day_i
 				setStyle(div, "background-color", day.color);
 			}
 
-			if (current_block_type === (current_block_type = select_block_type(state, each_value, week, week_index, week_1, day, day_index)) && if_block) {
-				if_block.p(changed, state, each_value, week, week_index, week_1, day, day_index);
-			} else {
-				if_block.u();
-				if_block.d();
-				if_block = current_block_type(state, each_value, week, week_index, week_1, day, day_index, component);
-				if_block.c();
-				if_block.m(div_1, null);
+			if ((changed.tooltip || changed.normalizedHistory) && raw_value !== (raw_value = state.tooltip(day.date, day.value))) {
+				div_1.innerHTML = raw_value;
 			}
 		},
 
 		u: function unmount() {
+			div_1.innerHTML = '';
+
 			detachNode(div);
-			if_block.u();
 		},
 
-		d: function destroy$$1() {
-			if_block.d();
-		}
+		d: noop
 	};
 }
 
-function select_block_type(state, each_value, week, week_index, week_1, day, day_index) {
-	if (typeof state.tooltip === 'function') return create_if_block_1;
-	return create_if_block_2;
-}
-
-function Heatmap$1(options) {
+function Heatmap(options) {
 	init(this, options);
-	this._state = assign({}, options.data);
+	this._state = assign(data(), options.data);
 	this._recompute({ history: 1 }, this._state);
 
 	var _oncreate = oncreate.bind(this);
@@ -811,12 +720,12 @@ function Heatmap$1(options) {
 	}
 }
 
-assign(Heatmap$1.prototype, proto);
+assign(Heatmap.prototype, proto);
 
-Heatmap$1.prototype._recompute = function _recompute(changed, state) {
+Heatmap.prototype._recompute = function _recompute(changed, state) {
 	if (changed.history) {
 		if (differs(state.normalizedHistory, (state.normalizedHistory = normalizedHistory(state.history)))) changed.normalizedHistory = true;
 	}
 };
 
-module.exports = Heatmap$1;
+module.exports = Heatmap;
