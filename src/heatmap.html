@@ -96,6 +96,7 @@
     export default {
         data () {
             return {
+                emptyColor: '#ebedf0',
                 tooltip: (date, value) => `${value} on ${date}`,
             };
         },
@@ -115,7 +116,10 @@
             }
         },
         computed: {
-            normalizedHistory: history => normalize(history || []),
+            normalizedHistory: (emptyColor, history) => normalize({
+                history: history || [],
+                emptyColor: emptyColor,
+            }),
         },
         helpers: {
             groupWeeks,

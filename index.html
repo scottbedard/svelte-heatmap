@@ -40,6 +40,7 @@
             new SvelteHeatmap({
                 target: document.querySelector('#heatmap'),
                 data: {
+                    emptyColor: '#eee',
                     history: data,
                     tooltip: (date, value) => `<strong>${value}</strong> contributions on ${date}`,
                 },

@@ -7,10 +7,8 @@ export const colors = [
     '#196127',
 ];
 
-export const emptyColor = '#ebedf0';
-
 // determine what color a day is
-export function attachDayColor(normalizedHistory) {
+export function attachDayColor(normalizedHistory, emptyColor) {
     const max = Math.max(...normalizedHistory.map(day => day.value));
 
     const colorValues = colors.map((color, i) => {

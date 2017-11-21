@@ -204,7 +204,7 @@ describe('heatmap', () => {
                 data: {
                     history: [
                         { date: '2017/11/05', value: 0 },
-                        // omitting 2017/11/04
+                        // omitting 2017/11/06
                         { date: '2017/11/07', value: 1 },
                         { date: '2017/11/08', value: 3 },
                         { date: '2017/11/09', value: 7 },
@@ -220,6 +220,22 @@ describe('heatmap', () => {
             expect(squares[3].style.backgroundColor).to.equal('rgb(123, 201, 111)'); // 2017/11/08
             expect(squares[4].style.backgroundColor).to.equal('rgb(35, 154, 59)'); // 2017/11/09
             expect(squares[5].style.backgroundColor).to.equal('rgb(25, 97, 39)'); // 2017/11/10
+        });
+
+        it('accepts a custom empty color', () => {
+            const el = div();
+            
+            new Heatmap({
+                target: el,
+                data: {
+                    emptyColor: 'red',
+                    history: [
+                        { date: '2017/11/05', value: 0 },
+                    ],
+                },
+            });
+
+            expect(el.querySelector('.svelte-heatmap-day-inner').style.backgroundColor).to.equal('red');
         });
     });
 });

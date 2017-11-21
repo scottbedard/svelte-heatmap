@@ -24,14 +24,14 @@ export function groupWeeks(normalizedHist) {
 
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
-export function normalize(hist) {
-    const normalizedHistory = hist.slice(0)
+export function normalize(heatmap) {
+    const normalizedHistory = heatmap.history.slice(0)
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(fillMissingDates, [])
         .map(attachDayOfWeek);
 
     // finally, attach a color to each piece of history
-    return attachDayColor(normalizedHistory);
+    return attachDayColor(normalizedHistory, heatmap.emptyColor);
 }
 
 // validate that the history prop is in the correct format
