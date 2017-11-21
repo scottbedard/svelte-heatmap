@@ -206,9 +206,9 @@ describe('heatmap', () => {
                         { date: '2017/11/05', value: 0 },
                         // omitting 2017/11/06
                         { date: '2017/11/07', value: 1 },
-                        { date: '2017/11/08', value: 3 },
-                        { date: '2017/11/09', value: 7 },
-                        { date: '2017/11/10', value: 10 },
+                        { date: '2017/11/08', value: 2 },
+                        { date: '2017/11/09', value: 3 },
+                        { date: '2017/11/10', value: 4 },
                     ],
                 },
             });
@@ -236,6 +236,31 @@ describe('heatmap', () => {
             });
 
             expect(el.querySelector('.svelte-heatmap-day-inner').style.backgroundColor).to.equal('red');
+        });
+
+        it('accepts an array of colors', () => {
+            const el = div();
+            
+            new Heatmap({
+                target: el,
+                data: {
+                    colors: ['red', 'green', 'blue'],
+                    history: [
+                        { date: '2017/11/05', value: 1 },
+                        { date: '2017/11/06', value: 2 },
+                        { date: '2017/11/07', value: 3 },
+                    ],
+                },
+            });
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(1) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('red');
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(2) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('green');
+
+            expect(el.querySelector('.svelte-heatmap-day:nth-child(3) .svelte-heatmap-day-inner').style.backgroundColor)
+                .to.equal('blue'); 
         });
     });
 });

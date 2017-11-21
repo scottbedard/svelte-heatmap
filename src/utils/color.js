@@ -1,15 +1,8 @@
-// for now these are just hard coded. in the future, this
-// component should accept props to calculate these.
-export const colors = [
-    '#c6e48b',
-    '#7bc96f',
-    '#239a3b',
-    '#196127',
-];
-
 // determine what color a day is
-export function attachDayColor(normalizedHistory, emptyColor) {
-    const max = Math.max(...normalizedHistory.map(day => day.value));
+export function attachDayColor({ colors, emptyColor, normalizedHistory }) {
+    const values = normalizedHistory.map(day => day.value);
+    const max = Math.max(...values);
+    const min = Math.min(...values) || 1;
 
     const colorValues = colors.map((color, i) => {
         return { color, value: i / colors.length };
@@ -21,7 +14,7 @@ export function attachDayColor(normalizedHistory, emptyColor) {
 
         if (day.value) {
             for (let i = 0, end = colorValues.length; i < end; i++) {
-                if (dayValue < colorValues[i].value) {
+                if (dayValue <= colorValues[i].value) {
                     break;
                 }
 

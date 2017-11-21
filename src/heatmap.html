@@ -96,6 +96,7 @@
     export default {
         data () {
             return {
+                colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
                 emptyColor: '#ebedf0',
                 tooltip: (date, value) => `${value} on ${date}`,
             };
@@ -116,9 +117,10 @@
             }
         },
         computed: {
-            normalizedHistory: (emptyColor, history) => normalize({
-                history: history || [],
+            normalizedHistory: (colors, emptyColor, history) => normalize({
+                colors: colors,
                 emptyColor: emptyColor,
+                history: history || [],
             }),
         },
         helpers: {

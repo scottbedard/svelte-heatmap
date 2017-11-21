@@ -31,7 +31,11 @@ export function normalize(heatmap) {
         .map(attachDayOfWeek);
 
     // finally, attach a color to each piece of history
-    return attachDayColor(normalizedHistory, heatmap.emptyColor);
+    return attachDayColor({
+        colors: heatmap.colors,
+        emptyColor: heatmap.emptyColor,
+        normalizedHistory,
+    });
 }
 
 // validate that the history prop is in the correct format
