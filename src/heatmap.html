@@ -12,11 +12,7 @@
                         {{#if day !== null}}
                             <div class="svelte-heatmap-day-inner" style="background-color: {{ day.color }}">
                                 <div class="svelte-heatmap-day-tooltip">
-                                    {{#if typeof tooltip === 'function'}}
-                                        {{{ tooltip(day.date, day.value) }}}
-                                    {{else}}
-                                        {{ day.value }} on {{ day.date }}
-                                    {{/if}}
+                                    {{{ tooltip(day.date, day.value) }}}
                                 </div>
                             </div>
                         {{/if}}
@@ -98,6 +94,11 @@
     import { groupWeeks, normalize, validate } from './utils/history';
 
     export default {
+        data () {
+            return {
+                tooltip: (date, value) => `${value} on ${date}`,
+            };
+        },
         oncreate () {
             try {
                 // validate the history prop
