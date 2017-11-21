@@ -5,6 +5,7 @@
   "main": "dist/heatmap.cjs.js",
   "module": "dist/heatmap.esm.js",
   "browser": "dist/heatmap.js",
+  "svelte": "src/heatmap.html",
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup -c",
     "dev": "cross-env NODE_ENV=development rollup -c -w",
