@@ -1,6 +1,6 @@
 {
   "name": "svelte-heatmap",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A GitHub style heatmap made with Svelte.js",
   "main": "dist/heatmap.cjs.js",
   "module": "dist/heatmap.esm.js",
