@@ -12,7 +12,7 @@ const plugins = [
     }),
     babel({
         exclude: 'node_modules/**',
-        include: './src/**/*.js',
+        include: './src/**/*',
         plugins: ['external-helpers'],
     }),
 ];
