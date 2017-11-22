@@ -24,7 +24,7 @@ export function groupWeeks(normalizedHist) {
 
 // normalize the history data. this includes sorting entries
 // from oldest to newest, and filling in gaps between days.
-export function normalize(heatmap) {
+export function normalizeHistory(heatmap) {
     const normalizedHistory = heatmap.history.slice(0)
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .reduce(fillMissingDates, [])
@@ -32,11 +32,9 @@ export function normalize(heatmap) {
 
     // finally, attach a color to each piece of history
     return attachDayColor({
-        colors: heatmap.colors,
         emptyColor: heatmap.emptyColor,
-        highColor: heatmap.highColor,
-        lowColor: heatmap.lowColor,
-        normalizedHistory,
+        normalizedColors: heatmap.normalizedColors,
+        normalizedHistory: normalizedHistory,
     });
 }
 

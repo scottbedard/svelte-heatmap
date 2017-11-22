@@ -1,25 +1,38 @@
 <div class="svelte-heatmap">
     <div class="svelte-heatmap-inner">
-        <!-- render a container for each week -->
-        {{#each groupWeeks(normalizedHistory) as week}}
-            <div class="svelte-heatmap-week">
-
-                <!-- render a container for each day -->
-                {{#each week as day}}
-                    <div class="svelte-heatmap-day">
-
-                        <!-- if the day has data, render an inner box for it -->
-                        {{#if day !== null}}
-                            <div class="svelte-heatmap-day-inner" style="background-color: {{ day.color }}">
-                                <div class="svelte-heatmap-day-tooltip">
-                                    {{{ tooltip(day.date, day.value) }}}
+        <!-- history -->
+        <div class="svelte-heatmap-history">
+            {{#each groupWeeks(normalizedHistory) as week}}
+                <div class="svelte-heatmap-week">
+                    {{#each week as day}}
+                        <div class="svelte-heatmap-day">
+                            {{#if day !== null}}
+                                <div class="svelte-heatmap-day-inner" style="background-color: {{ day.color }}">
+                                    <div class="svelte-heatmap-day-tooltip">
+                                        {{{ tooltip(day.date, day.value) }}}
+                                    </div>
                                 </div>
-                            </div>
-                        {{/if}}
-                    </div>
+                            {{/if}}
+                        </div>
+                    {{/each}}
+                </div>
+            {{/each}}
+        </div>
+
+        <!-- legend -->
+        {{#if showLegend}}
+            <div class="svelte-heatmap-legend">
+                <span class="svelte-heatmap-legend-low">{{ legendLow }}</span>
+                <span class="svelte-heatmap-legend-color" style="background-color: {{ emptyColor }}"></span>
+                {{#each normalizedColors as color}}
+                    <span 
+                        class="svelte-heatmap-legend-color" 
+                        style="background-color: {{ color.color }}">
+                    </span>
                 {{/each}}
+                <span class="svelte-heatmap-legend-high">{{ legendHigh }}</span>
             </div>
-        {{/each}}
+        {{/if}}
     </div>
 </div>
 
@@ -29,9 +42,11 @@
         justify-content: center;
     }
 
-    .svelte-heatmap-inner {
+    .svelte-heatmap-history {
         display: flex;
         flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
     }
 
     .svelte-heatmap-week {
@@ -46,15 +61,39 @@
 
     .svelte-heatmap-day-inner {
         background-color: #ccc;
-        border-radius: 3px;
+        border-radius: 2px;
         height: 100%;
         position: relative;
         width: 100%;
     }
 
+    .svelte-heatmap-legend {
+        align-items: center;
+        display: flex;
+        font-size: 12px;
+        justify-content: flex-end;
+        width: 100%;
+    }
+
+    .svelte-heatmap-legend-low {
+        margin-right: 5px;
+    }
+
+    .svelte-heatmap-legend-high {
+        margin-left: 5px;
+    }
+
+    .svelte-heatmap-legend-color {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border-radius: 2px;
+        margin: 0 2px;
+    }
+
     .svelte-heatmap-day-tooltip {
         background: #333;
-        border-radius: 3px;
+        border-radius: 2px;
         bottom: 100%;
         color: #fff;
         font-size: 12px;
@@ -91,8 +130,8 @@
 
 <script>
     import { warn } from './utils/log';
-    import { validateColors } from './utils/color';
-    import { groupWeeks, normalize, validateHistory } from './utils/history';
+    import { normalizeColors, validateColors } from './utils/color';
+    import { groupWeeks, normalizeHistory, validateHistory } from './utils/history';
 
     export default {
         data () {
@@ -100,7 +139,10 @@
                 colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
                 emptyColor: '#ebedf0',
                 highColor: null,
+                legendHigh: 'More',
+                legendLow: 'Less',
                 lowColor: null,
+                showLegend: true,
                 tooltip: (date, value) => `${value} on ${date}`,
             };
         },
@@ -128,12 +170,15 @@
             }
         },
         computed: {
-            normalizedHistory: (colors, emptyColor, highColor, history, lowColor) => normalize({
-                colors: colors,
-                emptyColor: emptyColor,
-                highColor: highColor,
+            normalizedColors: (colors, highColor, lowColor) => normalizeColors({
+                colors,
+                highColor,
+                lowColor,
+            }),
+            normalizedHistory: (history, emptyColor, normalizedColors) => normalizeHistory({
+                emptyColor,
+                normalizedColors,
                 history: history || [],
-                lowColor: lowColor,
             }),
         },
         helpers: {

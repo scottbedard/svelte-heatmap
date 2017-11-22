@@ -345,6 +345,43 @@ describe('heatmap', () => {
 
             expect(el.querySelector('.svelte-heatmap-day:nth-child(3) .svelte-heatmap-day-inner').style.backgroundColor)
                 .to.equal('rgb(255, 255, 255)'); 
-        })
+        });
+
+        it('renders a legend', () => {
+            const el = div();
+            
+            const vm = new Heatmap({
+                target: el,
+                data: {
+                    colors: ['red', 'green', 'blue'],
+                    emptyColor: 'gray',
+                    history: [
+                        { date: '2017/11/05', value: 1 },
+                    ],
+                    legendHigh: 'high',
+                    legendLow: 'low',
+                    showLegend: false,
+                },
+            });
+
+            // there should be no legend if showLegend is false
+            expect(el.querySelector('.svelte-heatmap-legend')).to.be.null;
+
+            // enable the legend
+            vm.set({ showLegend: true });
+
+            // make sure the container and text values are correct
+            expect(el.querySelector('.svelte-heatmap-legend')).not.to.be.null;
+            expect(el.querySelector('.svelte-heatmap-legend-low').textContent).to.equal('low');
+            expect(el.querySelector('.svelte-heatmap-legend-high').textContent).to.equal('high');
+           
+            // make sure each of our colors is displayed correctly
+            const legendColors = el.querySelectorAll('.svelte-heatmap-legend-color');
+            expect(legendColors.length).to.equal(4);
+            expect(legendColors[0].style.backgroundColor).to.equal('gray');
+            expect(legendColors[1].style.backgroundColor).to.equal('red');
+            expect(legendColors[2].style.backgroundColor).to.equal('green');
+            expect(legendColors[3].style.backgroundColor).to.equal('blue');
+        });
     });
 });

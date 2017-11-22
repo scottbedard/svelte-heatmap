@@ -41,18 +41,23 @@
                 target: document.querySelector('#heatmap'),
                 data: {
                     // dynamic colors
-                    colors: 10,
-                    lowColor: '#c6e48b',
-                    highColor: '#196127',
+                    // colors: 3,
+                    // lowColor: '#c6e48b',
+                    // highColor: '#196127',
 
                     // explicit colors
                     // colors: ['#c6e48b', '#7bc96f', '#239a3b', '#196127'],
 
                     // empty color
-                    emptyColor: '#eee',
+                    // emptyColor: '#ebedf0',
 
                     // heatmap history
                     history: data,
+
+                    // legend controls
+                    // legendLow: 'Less',
+                    // legendHigh: 'More',
+                    // showLegend: true,
 
                     // tooltip text
                     tooltip: (date, value) => `<strong>${value}</strong> contributions on ${date}`,

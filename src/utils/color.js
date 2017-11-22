@@ -1,34 +1,20 @@
 // determine what color a day is
-export function attachDayColor({ colors, emptyColor, highColor, lowColor, normalizedHistory }) {
+export function attachDayColor({ emptyColor, normalizedColors, normalizedHistory }) {
     const values = normalizedHistory.map(day => day.value);
     const max = Math.max(...values);
     const min = Math.min(...values) || 1;
-
-    let colorValues = [];
-
-    if (Array.isArray(colors)) {
-        colorValues = colors.map((color, i) => {
-            return { color, value: i / colors.length };
-        });
-    } else if (isValidColorsNumber(colors)) {
-        try {
-            colorValues = gradient(lowColor, highColor, colors).map((color, i) => {
-                return { color, value: i / colors };
-            });
-        } catch (e) {}
-    }
 
     return normalizedHistory.map(day => {
         let color = emptyColor;
         let dayValue = day.value / max;
 
         if (day.value) {
-            for (let i = 0, end = colorValues.length; i < end; i++) {
-                if (dayValue <= colorValues[i].value) {
+            for (let i = 0, end = normalizedColors.length; i < end; i++) {
+                if (dayValue <= normalizedColors[i].value) {
                     break;
                 }
 
-                color = colorValues[i].color;
+                color = normalizedColors[i].color;
             }
         }
 
@@ -39,6 +25,24 @@ export function attachDayColor({ colors, emptyColor, highColor, lowColor, normal
             value: day.value,
         }
     });
+}
+
+// convert color props into a gradient if neccessary
+export function normalizeColors({ colors, highColor, lowColor }) {
+    if (Array.isArray(colors)) {
+        return colors.map((color, i) => ({ color, value: i / colors.length }));
+    }
+    
+    if (isValidColorsNumber(colors)) {
+        try {
+            return gradient(lowColor, highColor, colors).map((color, i) => ({
+                color, 
+                value: i / colors,
+            }));
+        } catch (e) {}
+    }
+
+    return [];
 }
 
 // validate the colors props
