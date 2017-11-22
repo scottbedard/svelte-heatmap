@@ -2,6 +2,7 @@
 
 [![build status](https://img.shields.io/circleci/project/github/scottbedard/svelte-heatmap.svg)](https://circleci.com/gh/scottbedard/svelte-heatmap)
 [![coverage](https://img.shields.io/codecov/c/github/scottbedard/svelte-heatmap.svg)](https://codecov.io/gh/scottbedard/svelte-heatmap)
+[![dev dependencies](https://img.shields.io/david/dev/scottbedard/svelte-heatmap.svg)](https://david-dm.org/scottbedard/svelte-heatmap?type=dev)
 [![npm](https://img.shields.io/npm/v/svelte-heatmap.svg)](https://www.npmjs.com/package/svelte-heatmap)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/scottbedard/svelte-heatmap/blob/master/LICENSE)
 
