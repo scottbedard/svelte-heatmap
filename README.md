@@ -83,12 +83,13 @@ new SvelteHeatmap({
 
 ### Legend
 
-A legend can be enabled/disabled via the `showLegend` property. To customize the labels, set the `legendLow` or `legendHigh` values.
+A legend can be enabled/disabled via the `showLegend` property. To customize the labels, set `legendLow` or `legendHigh` values.
 
 ```js
 new SventeHeatmap({
     target: el,
     data: {
+        history: [],
         showLegend: true,
         legendLow: 'Less',
         legendHigh: 'More',
