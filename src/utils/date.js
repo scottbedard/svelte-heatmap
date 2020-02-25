@@ -1,7 +1,7 @@
 /**
  * Convert a date value to a javascript Date object.
  *
- * @param  {Date|number|string} value
+ * @param {Date|number|string} value
  * @return {Date}
  */
 export function convertToDate(value) {
@@ -14,4 +14,24 @@ export function convertToDate(value) {
     }
 
     throw new Error('Invalid date value');
+}
+
+/**
+ * Get the last day of the month.
+ *
+ * @param {Date} date
+ * @return {Date}
+ */
+export function getMonthEnd(date) {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+}
+
+/**
+ * Get the first day of the month.
+ *
+ * @param {Date} date
+ * @return {Date}
+ */
+export function getMonthStart(date) {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
 }
