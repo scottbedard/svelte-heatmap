@@ -1,46 +1,35 @@
 {
   "name": "svelte-heatmap",
-  "version": "0.4.0",
   "description": "A GitHub style heatmap made with Svelte.js",
-  "main": "dist/heatmap.cjs.js",
-  "module": "dist/heatmap.esm.js",
-  "browser": "dist/heatmap.js",
-  "svelte": "src/heatmap.html",
-  "scripts": {
-    "build": "cross-env NODE_ENV=production rollup -c",
-    "dev": "cross-env NODE_ENV=development rollup -c -w",
-    "test": "cross-env NODE_ENV=test rollup -c && mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/scottbedard/svelte-heatmap.git"
-  },
-  "keywords": [
-    "svelte"
-  ],
   "author": "Scott Bedard",
   "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "src/index.js",
   "bugs": {
     "url": "https://github.com/scottbedard/svelte-heatmap/issues"
   },
-  "homepage": "https://github.com/scottbedard/svelte-heatmap#readme",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-istanbul": "^4.1.5",
-    "babel-preset-env": "^1.6.1",
-    "browser-env": "^3.2.2",
-    "chai": "^4.1.2",
-    "cross-env": "^5.1.1",
-    "istanbul": "^0.4.5",
-    "mocha": "^4.0.1",
-    "rollup": "^0.51.5",
-    "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-eslint": "^4.0.0",
-    "rollup-plugin-istanbul": "^1.1.0",
-    "rollup-plugin-svelte": "^3.1.0",
-    "sinon": "^4.1.2"
+  "homepage": "https://github.com/scottbedard/svelte-heatmap",
+  "keywords": [
+    "svelte"
+  ],
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
   },
-  "dependencies": {}
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^6.0.0",
+    "rollup": "^1.20.0",
+    "rollup-plugin-svelte": "^5.0.0",
+    "svelte": "^3.0.0"
+  },
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scottbedard/svelte-heatmap.git"
+  }
 }
