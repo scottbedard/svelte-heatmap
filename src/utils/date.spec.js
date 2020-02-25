@@ -2,6 +2,8 @@ import {
     convertToDate,
     getMonthEnd,
     getMonthStart,
+    getYearEnd,
+    getYearStart,
 } from './date';
 
 describe('date utils', () => {
@@ -52,6 +54,38 @@ describe('date utils', () => {
         }).forEach(([date, expected]) => {
             it(`${date} -> ${expected}`, () => {
                 const d = getMonthStart(new Date(`${date}T00:00:00`));
+                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+                expect(actual).toBe(expected);
+            });
+        });
+    });
+
+    describe('getYearEnd', () => {
+        Object.entries({
+            '2020-01-01': '2020-12-31',
+            '2020-01-15': '2020-12-31',
+            '2020-01-31': '2020-12-31',
+            '2020-12-31': '2020-12-31',
+        }).forEach(([date, expected]) => {
+            it(`${date} -> ${expected}`, () => {
+                const d = getYearEnd(new Date(`${date}T00:00:00`));
+                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+                expect(actual).toBe(expected);
+            });
+        });
+    });
+
+    describe('getYearStart', () => {
+        Object.entries({
+            '2020-01-01': '2020-01-01',
+            '2020-01-15': '2020-01-01',
+            '2020-01-31': '2020-01-01',
+            '2020-12-31': '2020-01-01',
+        }).forEach(([date, expected]) => {
+            it(`${date} -> ${expected}`, () => {
+                const d = getYearStart(new Date(`${date}T00:00:00`));
                 const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
                 expect(actual).toBe(expected);

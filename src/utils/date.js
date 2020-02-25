@@ -35,3 +35,23 @@ export function getMonthEnd(date) {
 export function getMonthStart(date) {
     return new Date(date.getFullYear(), date.getMonth(), 1);
 }
+
+/**
+ * Get the last day of the year.
+ *
+ * @param {Date} date
+ * @return {Date}
+ */
+export function getYearEnd(date) {
+    return new Date(date.getFullYear(), 11, 31);
+}
+
+/**
+ * Get the first day of the year.
+ *
+ * @param {Date} date
+ * @return {Date}
+ */
+export function getYearStart(date) {
+    return new Date(date.getFullYear(), 0, 1);
+}
