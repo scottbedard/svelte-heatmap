@@ -1,0 +1,23 @@
+<html lang="en">
+    <head>
+        <title>svelte-heatmap</title>
+    </head>
+    <body>
+        <div id="heatmap"></div>
+        <script src="./dist/index.js"></script>
+        <script>
+            // generate dummy data
+            const today = new Date();
+
+            console.log(today);
+
+            // instantiate component and mount it to the dom
+            new Heatmap({
+                props: {
+                    // ...
+                },
+                target: document.querySelector('#heatmap'),
+            });
+        </script>
+    </body>
+</html>
