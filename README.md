@@ -12,7 +12,11 @@ Soon...
 
 ## Props
 
-##### `colors`
+#### `data`
+
+Array of objects containing the chart data. These objects should be in the shape of `{ date, value }`.
+
+#### `colors`
 
 Array of CSS colors to use for the chart, ordered from lowest to highest. Default colors match the GitHub contribution graph.
 
@@ -24,13 +28,15 @@ CSS color to use for cells with no value.
 
 Date object representing the first day of the graph. If omitted, this will default to the first day of the `month` or `year`, based on the current `view`.
 
-##### `endDate`
+#### `endDate`
 
 Date object represending the last day of the graph. If omitted, this will default to the last day of the current `month` or `year`, depending on the current `view`.
 
-##### `view`
+#### `view`
 
 Determines how the chart should be displayed. Supported values are `monthly` and `yearly`, defaults to `yearly`.
+
+> **Note:** Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a `string` or `number` compatible with the Date constructor.
 
 ## License
 
