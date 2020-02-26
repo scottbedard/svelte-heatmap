@@ -6,15 +6,26 @@
         <div id="heatmap"></div>
         <script src="./dist/index.js"></script>
         <script>
-            // generate dummy data
-            const today = new Date();
-
-            console.log(today);
-
             // instantiate component and mount it to the dom
             new Heatmap({
                 props: {
-                    data: [],
+                    data: [
+                        { date: '2019-01-01T00:00:00', value: 3 },
+                        { date: '2019-01-24T00:00:00', value: 6 },
+                        { date: '2019-02-04T00:00:00', value: 4 },
+                        { date: '2019-03-11T00:00:00', value: 11 },
+                        { date: '2019-04-02T00:00:00', value: 2 },
+                        { date: '2019-04-13T00:00:00', value: 5 },
+                        { date: '2019-05-22T00:00:00', value: 8 },
+                        { date: '2019-06-19T00:00:00', value: 6 },
+                        { date: '2019-07-09T00:00:00', value: 3 },
+                        { date: '2019-08-01T00:00:00', value: 0 },
+                        { date: '2019-09-23T00:00:00', value: 12 },
+                        { date: '2019-10-15T00:00:00', value: 2 },
+                        { date: '2019-11-28T00:00:00', value: 4 },
+                        { date: '2019-12-07T00:00:00', value: 17 },
+                        { date: '2019-12-10T00:00:00', value: 13 },
+                    ],
                     endDate: '2019-12-31',
                     startDate: '2019-01-01',
                     view: 'weekly',
