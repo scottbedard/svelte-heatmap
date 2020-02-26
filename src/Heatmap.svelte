@@ -1,7 +1,17 @@
-<Week />
-<Month />
-
-<pre>calendar: { JSON.stringify(calendar, null, 2) }</pre>
+<svg>
+    {#if view === 'monthly'}
+        {#each chunks as chunk}
+            <Month days={chunk} />
+        {/each}
+    {:else}
+        {#each chunks as chunk, index}
+            <Week
+                days={chunk}
+                index={index}
+            />
+        {/each}
+    {/if}
+</svg>
 
 <script>
 import {
@@ -19,7 +29,7 @@ export let endDate = null;
 export let startDate = null;
 export let view = 'yearly';
 
-$: calendar = chunkCalendar({
+$: chunks = chunkCalendar({
     days: getCalendar({ data, endDate, startDate, view }),
     view,
 });
