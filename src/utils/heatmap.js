@@ -30,21 +30,43 @@ export function getCalendar({ data, endDate, startDate, view }) {
     }
 
     const days = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
-    const startDateOfMonth = startDate.getDate();
+    const startDayOfMonth = startDate.getDate();
 
-    return new Array(days).fill().map((x, i) => {
-        const date = new Date(startDate);
-        date.setDate(startDateOfMonth + i);
+    return new Array(days)
+        .fill()
+        .map((x, offset) => getCalendarValue({
+            data,
+            offset,
+            startDate,
+            startDayOfMonth,
+        }));
+}
 
-        const nextDate = new Date(date);
-        nextDate.setDate(date.getDate() + 1);
+/**
+ * Aggregate the value of each day.
+ *
+ * @param {Object}          options
+ * @param {Array<Object>}   options.data
+ * @param {number}          options.offset
+ * @param {number}          options.startDayOfMonth
+ * @param {Date}            options.startDate
+ *
+ * @return {Object}
+ */
+export function getCalendarValue({ data, offset, startDate, startDayOfMonth }) {
+    const date = new Date(startDate);
+    date.setDate(startDayOfMonth + offset);
 
-        const value = data.reduce((acc, obj) => {
-            const datapoint = normalizeDate(obj.date);
+    const nextDate = new Date(date);
+    nextDate.setDate(date.getDate() + 1);
 
-            return datapoint >= date && datapoint < nextDate ? acc + obj.value : acc;
-        }, 0);
+    const value = data.reduce((acc, obj) => {
+        const datapoint = normalizeDate(obj.date);
 
-        return { date, value };
-    });
+        return datapoint >= date && datapoint < nextDate
+            ? acc + obj.value
+            : acc;
+    }, 0);
+
+    return { date, value };
 }
