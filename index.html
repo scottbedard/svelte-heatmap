@@ -14,7 +14,10 @@
             // instantiate component and mount it to the dom
             new Heatmap({
                 props: {
-                    // ...
+                    data: [],
+                    endDate: '2019-12-31',
+                    startDate: '2019-01-01',
+                    view: 'weekly',
                 },
                 target: document.querySelector('#heatmap'),
             });

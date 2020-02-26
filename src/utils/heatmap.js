@@ -29,23 +29,20 @@ export function getCalendar({ data, endDate, startDate, view }) {
         endDate = getWeekEnd(endDate);
     }
 
-    const dayCount = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
+    const days = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
+    const startDateOfMonth = startDate.getDate();
 
-    return new Array(dayCount).fill().map((x, i) => {
+    return new Array(days).fill().map((x, i) => {
         const date = new Date(startDate);
-        date.setDate(startDate.getDate() + i);
+        date.setDate(startDateOfMonth + i);
 
         const nextDate = new Date(date);
         nextDate.setDate(date.getDate() + 1);
 
         const value = data.reduce((acc, obj) => {
-            const dataDate = normalizeDate(obj.date);
+            const datapoint = normalizeDate(obj.date);
 
-            if (dataDate >= date && dataDate <= nextDate) {
-                acc += obj.value;
-            }
-
-            return acc;
+            return datapoint >= date && datapoint < nextDate ? acc + obj.value : acc;
         }, 0);
 
         return { date, value };
