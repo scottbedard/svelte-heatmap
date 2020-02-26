@@ -1,8 +1,10 @@
-<h1>Hello</h1>
-<pre>{JSON.stringify(calendar, null, 4)}</pre>
+<Week />
+<Month />
 
 <script>
 import { getCalendar } from './utils/heatmap';
+import Month from './views/Month.svelte';
+import Week from './views/Week.svelte';
 
 export let colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
 export let data = [];
