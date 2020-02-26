@@ -1,22 +1,4 @@
 /**
- * Convert a date value to a javascript Date object.
- *
- * @param {Date|number|string} value
- * @return {Date}
- */
-export function convertToDate(value) {
-    if (value instanceof Date) {
-        return value;
-    }
-
-    if (['number', 'string'].includes(typeof value)) {
-        return new Date(value);
-    }
-
-    throw new Error('Invalid date value');
-}
-
-/**
  * Get the last day of the month.
  *
  * @param {Date} date
@@ -37,21 +19,39 @@ export function getMonthStart(date) {
 }
 
 /**
- * Get the last day of the year.
+ * Get the last day of the week.
  *
  * @param {Date} date
  * @return {Date}
  */
-export function getYearEnd(date) {
-    return new Date(date.getFullYear(), 11, 31);
+export function getWeekEnd(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + (6 - date.getDay()));
 }
 
 /**
- * Get the first day of the year.
+ * Get the first day of the week.
  *
  * @param {Date} date
  * @return {Date}
  */
-export function getYearStart(date) {
-    return new Date(date.getFullYear(), 0, 1);
+export function getWeekStart(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+}
+
+/**
+ * Normalize to a javascript Date object.
+ *
+ * @param {Date|number|string} value
+ * @return {Date}
+ */
+export function normalizeDate(value) {
+    if (value instanceof Date) {
+        return value;
+    }
+
+    if (['number', 'string'].includes(typeof value)) {
+        return new Date(value);
+    }
+
+    throw new Error('Invalid date value');
 }
