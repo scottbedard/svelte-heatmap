@@ -1,8 +1,14 @@
 <Week />
 <Month />
 
+<pre>calendar: { JSON.stringify(calendar, null, 2) }</pre>
+
 <script>
-import { getCalendar } from './utils/heatmap';
+import {
+    chunkCalendar,
+    getCalendar,
+} from './utils/heatmap';
+
 import Month from './views/Month.svelte';
 import Week from './views/Week.svelte';
 
@@ -13,6 +19,9 @@ export let endDate = null;
 export let startDate = null;
 export let view = 'yearly';
 
-$: calendar = getCalendar({ data, endDate, startDate, view });
+$: calendar = chunkCalendar({
+    days: getCalendar({ data, endDate, startDate, view }),
+    view,
+});
 
 </script>

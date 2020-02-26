@@ -7,6 +7,46 @@ import {
 } from './date';
 
 /**
+ * Divide an array of days into weekly / monthly chunks.
+ *
+ * @param {Object}          options
+ * @param {Array<Object>}   options.days
+ * @param {string}          options.view
+ *
+ * @return {Array<Array<Object>>} 
+ */
+export function chunkCalendar({ days, view }) {
+    // monthly
+    if (view === 'monthly') {
+        let prevMonth = -1;
+
+        return days.reduce((acc, day) => {
+            const currentMonth = day.date.getMonth();
+
+            if (prevMonth !== currentMonth) {
+                acc.push([]);
+                prevMonth = currentMonth;
+            }
+
+            acc[acc.length - 1].push(day);
+
+            return acc;
+        }, []);
+    }
+
+    // weekly
+    return days.reduce((acc, day, index) => {
+        if (index % 7 === 0) {
+            acc.push([]);
+        }
+
+        acc[acc.length - 1].push(day);
+
+        return acc;
+    }, []);
+}
+
+/**
  * Determine the first day rendered on the heatmap.
  *
  * @param {Object}              props
