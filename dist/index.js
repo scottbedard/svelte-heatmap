@@ -361,12 +361,19 @@
     /**
      * Divide a calendar into months.
      *
-     * @param {Array<Object>}   calendar
+     * @param {Object}              options
+     * @param {boolean}             options.allowOverflow
+     * @param {Array<Object>}       options.calendar
+     * @param {Date|string|number}  options.endDate
+     * @param {Date|string|number}  options.startDate
      *
      * @return {Array<Array<Object>>} 
      */
-    function chunkMonths(calendar) {
+    function chunkMonths({ allowOverflow, calendar, endDate, startDate }) {
         let prevMonth = -1;
+
+        startDate = normalizeDate(startDate);
+        endDate = normalizeDate(endDate);
 
         return calendar.reduce((acc, day) => {
             const currentMonth = day.date.getMonth();
@@ -376,7 +383,14 @@
                 prevMonth = currentMonth;
             }
 
-            acc[acc.length - 1].push(day);
+            if (
+                allowOverflow || (
+                    (!startDate || day.date >= startDate) &&
+                    (!endDate || day.date <= endDate)
+                )
+            ) {
+                acc[acc.length - 1].push(day);
+            }
 
             return acc;
         }, []);
@@ -385,17 +399,31 @@
     /**
      * Divide a calendar into weeks.
      *
-     * @param {Array<Object>}   calendar
+     * @param {Object}              options
+     * @param {boolean}             options.allowOverflow
+     * @param {Array<Object>}       options.calendar
+     * @param {Date|string|number}  options.endDate
+     * @param {Date|string|number}  options.startDate
      *
      * @return {Array<Array<Object>>} 
      */
-    function chunkWeeks(calendar) {
+    function chunkWeeks({ allowOverflow, calendar, endDate, startDate }) {
+        startDate = normalizeDate(startDate);
+        endDate = normalizeDate(endDate);
+
         return calendar.reduce((acc, day, index) => {
             if (index % 7 === 0) {
                 acc.push([]);
             }
 
-            acc[acc.length - 1].push(day);
+            if (
+                allowOverflow || (
+                    (!startDate || day.date >= startDate) &&
+                    (!endDate || day.date <= endDate)
+                )
+            ) {
+                acc[acc.length - 1].push(day);
+            }
 
             return acc;
         }, []);
@@ -440,7 +468,8 @@
                 }
 
                 return day;
-            }).map(({ date, value }) => {
+            })
+            .map(({ date, value }) => {
                 let color = getColor({ colors, max, value }) || emptyColor;
 
                 return { color, date, value }
@@ -844,15 +873,15 @@
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
@@ -1032,8 +1061,8 @@
     			props: {
     				cellRect: /*cellRect*/ ctx[4],
     				cellSize: /*cellSize*/ ctx[1],
-    				days: /*chunk*/ ctx[14],
-    				index: /*index*/ ctx[16]
+    				days: /*chunk*/ ctx[15],
+    				index: /*index*/ ctx[17]
     			}
     		});
 
@@ -1049,7 +1078,7 @@
     			const week_changes = {};
     			if (dirty & /*cellRect*/ 16) week_changes.cellRect = /*cellRect*/ ctx[4];
     			if (dirty & /*cellSize*/ 2) week_changes.cellSize = /*cellSize*/ ctx[1];
-    			if (dirty & /*chunks*/ 32) week_changes.days = /*chunk*/ ctx[14];
+    			if (dirty & /*chunks*/ 32) week_changes.days = /*chunk*/ ctx[15];
     			week.$set(week_changes);
     		},
     		i(local) {
@@ -1077,8 +1106,8 @@
     				cellRect: /*cellRect*/ ctx[4],
     				cellSize: /*cellSize*/ ctx[1],
     				monthGap: /*monthGap*/ ctx[2],
-    				days: /*chunk*/ ctx[14],
-    				index: /*index*/ ctx[16]
+    				days: /*chunk*/ ctx[15],
+    				index: /*index*/ ctx[17]
     			}
     		});
 
@@ -1096,7 +1125,7 @@
     			if (dirty & /*cellRect*/ 16) month_changes.cellRect = /*cellRect*/ ctx[4];
     			if (dirty & /*cellSize*/ 2) month_changes.cellSize = /*cellSize*/ ctx[1];
     			if (dirty & /*monthGap*/ 4) month_changes.monthGap = /*monthGap*/ ctx[2];
-    			if (dirty & /*chunks*/ 32) month_changes.days = /*chunk*/ ctx[14];
+    			if (dirty & /*chunks*/ 32) month_changes.days = /*chunk*/ ctx[15];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -1188,6 +1217,7 @@
     }
 
     function instance$2($$self, $$props, $$invalidate) {
+    	let { allowOverflow = false } = $$props;
     	let { cellGap = 2 } = $$props;
     	let { cellSize = 10 } = $$props;
     	let { colors = ["#c6e48b", "#7bc96f", "#239a3b", "#196127"] } = $$props;
@@ -1199,14 +1229,15 @@
     	let { view = "weekly" } = $$props;
 
     	$$self.$set = $$props => {
+    		if ("allowOverflow" in $$props) $$invalidate(8, allowOverflow = $$props.allowOverflow);
     		if ("cellGap" in $$props) $$invalidate(0, cellGap = $$props.cellGap);
     		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
-    		if ("colors" in $$props) $$invalidate(8, colors = $$props.colors);
-    		if ("data" in $$props) $$invalidate(9, data = $$props.data);
-    		if ("emptyColor" in $$props) $$invalidate(10, emptyColor = $$props.emptyColor);
-    		if ("endDate" in $$props) $$invalidate(11, endDate = $$props.endDate);
+    		if ("colors" in $$props) $$invalidate(9, colors = $$props.colors);
+    		if ("data" in $$props) $$invalidate(10, data = $$props.data);
+    		if ("emptyColor" in $$props) $$invalidate(11, emptyColor = $$props.emptyColor);
+    		if ("endDate" in $$props) $$invalidate(12, endDate = $$props.endDate);
     		if ("monthGap" in $$props) $$invalidate(2, monthGap = $$props.monthGap);
-    		if ("startDate" in $$props) $$invalidate(12, startDate = $$props.startDate);
+    		if ("startDate" in $$props) $$invalidate(13, startDate = $$props.startDate);
     		if ("view" in $$props) $$invalidate(3, view = $$props.view);
     	};
 
@@ -1221,8 +1252,9 @@
     			 $$invalidate(4, cellRect = cellSize + cellGap);
     		}
 
-    		if ($$self.$$.dirty & /*colors, data, emptyColor, endDate, startDate, view*/ 7944) {
-    			 $$invalidate(13, calendar = getCalendar({
+    		if ($$self.$$.dirty & /*allowOverflow, colors, data, emptyColor, endDate, startDate, view*/ 16136) {
+    			 $$invalidate(14, calendar = getCalendar({
+    				allowOverflow,
     				colors,
     				data,
     				emptyColor,
@@ -1232,10 +1264,20 @@
     			}));
     		}
 
-    		if ($$self.$$.dirty & /*view, calendar*/ 8200) {
+    		if ($$self.$$.dirty & /*view, allowOverflow, calendar, endDate, startDate*/ 28936) {
     			 $$invalidate(5, chunks = view === "monthly"
-    			? chunkMonths(calendar)
-    			: chunkWeeks(calendar));
+    			? chunkMonths({
+    					allowOverflow,
+    					calendar,
+    					endDate,
+    					startDate
+    				})
+    			: chunkWeeks({
+    					allowOverflow,
+    					calendar,
+    					endDate,
+    					startDate
+    				}));
     		}
 
     		if ($$self.$$.dirty & /*view, cellRect, cellGap*/ 25) {
@@ -1260,6 +1302,7 @@
     		chunks,
     		height,
     		width,
+    		allowOverflow,
     		colors,
     		data,
     		emptyColor,
@@ -1273,14 +1316,15 @@
     		super();
 
     		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
+    			allowOverflow: 8,
     			cellGap: 0,
     			cellSize: 1,
-    			colors: 8,
-    			data: 9,
-    			emptyColor: 10,
-    			endDate: 11,
+    			colors: 9,
+    			data: 10,
+    			emptyColor: 11,
+    			endDate: 12,
     			monthGap: 2,
-    			startDate: 12,
+    			startDate: 13,
     			view: 3
     		});
     	}

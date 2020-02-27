@@ -9,12 +9,19 @@ import {
 /**
  * Divide a calendar into months.
  *
- * @param {Array<Object>}   calendar
+ * @param {Object}              options
+ * @param {boolean}             options.allowOverflow
+ * @param {Array<Object>}       options.calendar
+ * @param {Date|string|number}  options.endDate
+ * @param {Date|string|number}  options.startDate
  *
  * @return {Array<Array<Object>>} 
  */
-export function chunkMonths(calendar) {
+export function chunkMonths({ allowOverflow, calendar, endDate, startDate }) {
     let prevMonth = -1;
+
+    startDate = normalizeDate(startDate);
+    endDate = normalizeDate(endDate);
 
     return calendar.reduce((acc, day) => {
         const currentMonth = day.date.getMonth();
@@ -24,7 +31,14 @@ export function chunkMonths(calendar) {
             prevMonth = currentMonth;
         }
 
-        acc[acc.length - 1].push(day);
+        if (
+            allowOverflow || (
+                (!startDate || day.date >= startDate) &&
+                (!endDate || day.date <= endDate)
+            )
+        ) {
+            acc[acc.length - 1].push(day);
+        }
 
         return acc;
     }, []);
@@ -33,17 +47,31 @@ export function chunkMonths(calendar) {
 /**
  * Divide a calendar into weeks.
  *
- * @param {Array<Object>}   calendar
+ * @param {Object}              options
+ * @param {boolean}             options.allowOverflow
+ * @param {Array<Object>}       options.calendar
+ * @param {Date|string|number}  options.endDate
+ * @param {Date|string|number}  options.startDate
  *
  * @return {Array<Array<Object>>} 
  */
-export function chunkWeeks(calendar) {
+export function chunkWeeks({ allowOverflow, calendar, endDate, startDate }) {
+    startDate = normalizeDate(startDate);
+    endDate = normalizeDate(endDate);
+
     return calendar.reduce((acc, day, index) => {
         if (index % 7 === 0) {
             acc.push([]);
         }
 
-        acc[acc.length - 1].push(day);
+        if (
+            allowOverflow || (
+                (!startDate || day.date >= startDate) &&
+                (!endDate || day.date <= endDate)
+            )
+        ) {
+            acc[acc.length - 1].push(day);
+        }
 
         return acc;
     }, []);
@@ -88,7 +116,8 @@ export function getCalendar({ colors, data, emptyColor, endDate, startDate, view
             }
 
             return day;
-        }).map(({ date, value }) => {
+        })
+        .map(({ date, value }) => {
             let color = getColor({ colors, max, value }) || emptyColor;
 
             return { color, date, value }

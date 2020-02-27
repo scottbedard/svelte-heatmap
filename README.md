@@ -31,6 +31,10 @@ See the [Svelte documentation](https://svelte.dev/docs#Client-side_component_API
 
 Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a `string` or `number` compatible with the Date constructor.
 
+##### `allowOverflow`
+
+Renders cells that fall outside the `startDate` to `endDate` range. Defaults to `false`.
+
 ##### `cellGap`
 
 Defines the space between cells.

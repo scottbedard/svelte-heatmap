@@ -32,6 +32,7 @@ import {
 import Month from './views/Month.svelte';
 import Week from './views/Week.svelte';
 
+export let allowOverflow = false;
 export let cellGap = 2;
 export let cellSize = 10;
 export let colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
@@ -44,11 +45,11 @@ export let view = 'weekly';
 
 $: cellRect = cellSize + cellGap;
 
-$: calendar = getCalendar({ colors, data, emptyColor, endDate, startDate, view });
+$: calendar = getCalendar({ allowOverflow, colors, data, emptyColor, endDate, startDate, view });
 
 $: chunks = view === 'monthly'
-    ? chunkMonths(calendar)
-    : chunkWeeks(calendar);
+    ? chunkMonths({ allowOverflow, calendar, endDate, startDate })
+    : chunkWeeks({ allowOverflow, calendar, endDate, startDate });
 
 $: height = view === 'monthly'
     ? (6 * cellRect) - cellGap
