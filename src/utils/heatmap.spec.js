@@ -1,14 +1,13 @@
-import {
-    getCalendar,
-} from './heatmap';
-
-const stringifyDate = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+import { getCalendar } from './heatmap';
+import { stringifyDate } from './date';
 
 describe('heatmap utils', () => {
     describe('getCalendar', () => {
         it('weekly start and end dates', () => {
             const calendar = getCalendar({
+                colors: [],
                 data: [],
+                emptyColor: '#000',
                 startDate: '2020-01-15T00:00:00',
                 endDate: '2020-01-16T00:00:00',
                 view: 'weekly',
@@ -23,9 +22,11 @@ describe('heatmap utils', () => {
 
         it('monthly start and end dates', () => {
             const calendar = getCalendar({
+                colors: [],
                 data: [],
-                startDate: '2020-01-15T00:00:00',
+                emptyColor: '#000',
                 endDate: '2020-01-16T00:00:00',
+                startDate: '2020-01-15T00:00:00',
                 view: 'monthly',
             });
 
@@ -38,11 +39,13 @@ describe('heatmap utils', () => {
 
         it('aggregates values', () => {
             const calendar = getCalendar({
+                colors: [],
                 data: [
                     { date: '2020-01-15T00:00:00', value: 1 },
                     { date: '2020-01-15T00:00:00', value: 2 },
                     { date: '2020-01-16T00:00:00', value: 5 },
                 ],
+                emptyColor: '#000',
                 startDate: '2020-01-15T00:00:00',
                 endDate: '2020-01-16T00:00:00',
                 view: 'weekly',

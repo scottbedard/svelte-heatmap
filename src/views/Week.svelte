@@ -1,15 +1,20 @@
-<g transform={`translate(${index * 11}, 0)`}>
+<g transform={`translate(${index * cellRect}, 0)`}>
     {#each days as day, index}
         <rect
-            fill="#f00"
-            height="10"
-            width="10"
-            y={index * 11}
+            data-date={day.date}
+            data-value={day.value}
+            fill={day.color}
+            height={cellSize}
+            width={cellSize}
+            y={index * cellRect}
         />
     {/each}
 </g>
 
 <script>
+export let cellGap;
+export let cellRect;
+export let cellSize;
 export let days;
 export let index;
 </script>

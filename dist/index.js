@@ -277,6 +277,7 @@
      * Get the last day of the month.
      *
      * @param {Date} date
+     *
      * @return {Date}
      */
     function getMonthEnd(date) {
@@ -287,6 +288,7 @@
      * Get the first day of the month.
      *
      * @param {Date} date
+     *
      * @return {Date}
      */
     function getMonthStart(date) {
@@ -297,6 +299,7 @@
      * Get the last day of the week.
      *
      * @param {Date} date
+     *
      * @return {Date}
      */
     function getWeekEnd(date) {
@@ -307,6 +310,7 @@
      * Get the first day of the week.
      *
      * @param {Date} date
+     *
      * @return {Date}
      */
     function getWeekStart(date) {
@@ -317,6 +321,7 @@
      * Normalize to a javascript Date object.
      *
      * @param {Date|number|string} value
+     *
      * @return {Date}
      */
     function normalizeDate(value) {
@@ -375,14 +380,16 @@
      * Determine the first day rendered on the heatmap.
      *
      * @param {Object}              props
+     * @param {Array<string>}       props.colors
      * @param {Array<Object>}       props.data
+     * @param {string}              props.emptyColor
      * @param {Date|number|string}  props.endDate
      * @param {Date|number|string}  props.startDate
      * @param {string}              props.view
      *
      * @return {Date}
      */
-    function getCalendar({ data, endDate, startDate, view }) {
+    function getCalendar({ colors, data, emptyColor, endDate, startDate, view }) {
         startDate = startDate ? normalizeDate(startDate) : new Date();
         endDate = endDate ? normalizeDate(endDate) : new Date();
 
@@ -394,17 +401,53 @@
             endDate = getWeekEnd(endDate);
         }
 
-        const days = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
+        let max = 0;
         const startDayOfMonth = startDate.getDate();
+        const totalDays = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
 
-        return new Array(days)
+        return new Array(totalDays)
             .fill()
-            .map((x, offset) => getCalendarValue({
-                data,
-                offset,
-                startDate,
-                startDayOfMonth,
-            }));
+            .map((x, offset) => {
+                const day = getDay({ data, offset, startDate, startDayOfMonth });
+
+                if (day.value > max) {
+                    max = day.value;
+                }
+
+                return day;
+            }).map(({ date, value }) => {
+                let color = getColor({ colors, max, value }) || emptyColor;
+
+                return { color, date, value }
+            });
+    }
+
+    /**
+     * Determine what color a value should be.
+     *
+     * @param {options}         options
+     * @param {Array<string>}   options.colors
+     * @param {number}          options.max
+     * @param {number}          options.value
+     *
+     * @return {string|null}
+     */
+    function getColor({ colors, max, value }) {
+        if (colors.length && value) {
+            let color = colors[0];
+
+            const intencity = value / max;
+
+            for (let i = 1; i < colors.length; i++) {
+                if (intencity < i / colors.length) {
+                    return color;
+                }
+                
+                color = colors[i];
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -418,7 +461,7 @@
      *
      * @return {Object}
      */
-    function getCalendarValue({ data, offset, startDate, startDayOfMonth }) {
+    function getDay({ data, offset, startDate, startDayOfMonth }) {
         const date = new Date(startDate);
         date.setDate(startDayOfMonth + offset);
 
@@ -428,9 +471,7 @@
         const value = data.reduce((acc, obj) => {
             const datapoint = normalizeDate(obj.date);
 
-            return datapoint >= date && datapoint < nextDate
-                ? acc + obj.value
-                : acc;
+            return datapoint >= date && datapoint < nextDate ? acc + obj.value : acc;
         }, 0);
 
         return { date, value };
@@ -469,26 +510,56 @@
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[2] = list[i];
-    	child_ctx[1] = i;
+    	child_ctx[5] = list[i];
+    	child_ctx[3] = i;
     	return child_ctx;
     }
 
     // (2:4) {#each days as day, index}
     function create_each_block(ctx) {
     	let rect;
+    	let rect_data_date_value;
+    	let rect_data_value_value;
+    	let rect_fill_value;
     	let rect_y_value;
 
     	return {
     		c() {
     			rect = svg_element("rect");
-    			attr(rect, "fill", "#f00");
-    			attr(rect, "height", "10");
-    			attr(rect, "width", "10");
-    			attr(rect, "y", rect_y_value = /*index*/ ctx[1] * 11);
+    			attr(rect, "data-date", rect_data_date_value = /*day*/ ctx[5].date);
+    			attr(rect, "data-value", rect_data_value_value = /*day*/ ctx[5].value);
+    			attr(rect, "fill", rect_fill_value = /*day*/ ctx[5].color);
+    			attr(rect, "height", /*cellSize*/ ctx[1]);
+    			attr(rect, "width", /*cellSize*/ ctx[1]);
+    			attr(rect, "y", rect_y_value = /*index*/ ctx[3] * /*cellRect*/ ctx[0]);
     		},
     		m(target, anchor) {
     			insert(target, rect, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*days*/ 4 && rect_data_date_value !== (rect_data_date_value = /*day*/ ctx[5].date)) {
+    				attr(rect, "data-date", rect_data_date_value);
+    			}
+
+    			if (dirty & /*days*/ 4 && rect_data_value_value !== (rect_data_value_value = /*day*/ ctx[5].value)) {
+    				attr(rect, "data-value", rect_data_value_value);
+    			}
+
+    			if (dirty & /*days*/ 4 && rect_fill_value !== (rect_fill_value = /*day*/ ctx[5].color)) {
+    				attr(rect, "fill", rect_fill_value);
+    			}
+
+    			if (dirty & /*cellSize*/ 2) {
+    				attr(rect, "height", /*cellSize*/ ctx[1]);
+    			}
+
+    			if (dirty & /*cellSize*/ 2) {
+    				attr(rect, "width", /*cellSize*/ ctx[1]);
+    			}
+
+    			if (dirty & /*cellRect*/ 1 && rect_y_value !== (rect_y_value = /*index*/ ctx[3] * /*cellRect*/ ctx[0])) {
+    				attr(rect, "y", rect_y_value);
+    			}
     		},
     		d(detaching) {
     			if (detaching) detach(rect);
@@ -499,7 +570,7 @@
     function create_fragment$1(ctx) {
     	let g;
     	let g_transform_value;
-    	let each_value = /*days*/ ctx[0];
+    	let each_value = /*days*/ ctx[2];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -514,7 +585,7 @@
     				each_blocks[i].c();
     			}
 
-    			attr(g, "transform", g_transform_value = `translate(${/*index*/ ctx[1] * 11}, 0)`);
+    			attr(g, "transform", g_transform_value = `translate(${/*index*/ ctx[3] * /*cellRect*/ ctx[0]}, 0)`);
     		},
     		m(target, anchor) {
     			insert(target, g, anchor);
@@ -524,29 +595,30 @@
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*days*/ 1) {
-    				const old_length = each_value.length;
-    				each_value = /*days*/ ctx[0];
+    			if (dirty & /*days, cellSize, cellRect*/ 7) {
+    				each_value = /*days*/ ctx[2];
     				let i;
 
-    				for (i = old_length; i < each_value.length; i += 1) {
+    				for (i = 0; i < each_value.length; i += 1) {
     					const child_ctx = get_each_context(ctx, each_value, i);
 
-    					if (!each_blocks[i]) {
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
     						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(g, null);
     					}
     				}
 
-    				for (i = each_value.length; i < old_length; i += 1) {
+    				for (; i < each_blocks.length; i += 1) {
     					each_blocks[i].d(1);
     				}
 
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*index*/ 2 && g_transform_value !== (g_transform_value = `translate(${/*index*/ ctx[1] * 11}, 0)`)) {
+    			if (dirty & /*index, cellRect*/ 9 && g_transform_value !== (g_transform_value = `translate(${/*index*/ ctx[3] * /*cellRect*/ ctx[0]}, 0)`)) {
     				attr(g, "transform", g_transform_value);
     			}
     		},
@@ -560,21 +632,34 @@
     }
 
     function instance($$self, $$props, $$invalidate) {
+    	let { cellGap } = $$props;
+    	let { cellRect } = $$props;
+    	let { cellSize } = $$props;
     	let { days } = $$props;
     	let { index } = $$props;
 
     	$$self.$set = $$props => {
-    		if ("days" in $$props) $$invalidate(0, days = $$props.days);
-    		if ("index" in $$props) $$invalidate(1, index = $$props.index);
+    		if ("cellGap" in $$props) $$invalidate(4, cellGap = $$props.cellGap);
+    		if ("cellRect" in $$props) $$invalidate(0, cellRect = $$props.cellRect);
+    		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
+    		if ("days" in $$props) $$invalidate(2, days = $$props.days);
+    		if ("index" in $$props) $$invalidate(3, index = $$props.index);
     	};
 
-    	return [days, index];
+    	return [cellRect, cellSize, days, index, cellGap];
     }
 
     class Week extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance, create_fragment$1, safe_not_equal, { days: 0, index: 1 });
+
+    		init(this, options, instance, create_fragment$1, safe_not_equal, {
+    			cellGap: 4,
+    			cellRect: 0,
+    			cellSize: 1,
+    			days: 2,
+    			index: 3
+    		});
     	}
     }
 
@@ -582,14 +667,14 @@
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
-    	child_ctx[11] = i;
+    	child_ctx[12] = list[i];
+    	child_ctx[16] = i;
     	return child_ctx;
     }
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[12] = list[i];
     	return child_ctx;
     }
 
@@ -597,7 +682,7 @@
     function create_else_block(ctx) {
     	let each_1_anchor;
     	let current;
-    	let each_value_1 = /*chunks*/ ctx[1];
+    	let each_value_1 = /*chunks*/ ctx[4];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -625,8 +710,8 @@
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*chunks*/ 2) {
-    				each_value_1 = /*chunks*/ ctx[1];
+    			if (dirty & /*cellGap, cellRect, cellSize, chunks*/ 27) {
+    				each_value_1 = /*chunks*/ ctx[4];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -681,7 +766,7 @@
     function create_if_block(ctx) {
     	let each_1_anchor;
     	let current;
-    	let each_value = /*chunks*/ ctx[1];
+    	let each_value = /*chunks*/ ctx[4];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -709,8 +794,8 @@
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*chunks*/ 2) {
-    				each_value = /*chunks*/ ctx[1];
+    			if (dirty & /*chunks*/ 16) {
+    				each_value = /*chunks*/ ctx[4];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -767,8 +852,11 @@
 
     	const week = new Week({
     			props: {
-    				days: /*chunk*/ ctx[7],
-    				index: /*index*/ ctx[11]
+    				cellGap: /*cellGap*/ ctx[0],
+    				cellRect: /*cellRect*/ ctx[3],
+    				cellSize: /*cellSize*/ ctx[1],
+    				days: /*chunk*/ ctx[12],
+    				index: /*index*/ ctx[16]
     			}
     		});
 
@@ -782,7 +870,10 @@
     		},
     		p(ctx, dirty) {
     			const week_changes = {};
-    			if (dirty & /*chunks*/ 2) week_changes.days = /*chunk*/ ctx[7];
+    			if (dirty & /*cellGap*/ 1) week_changes.cellGap = /*cellGap*/ ctx[0];
+    			if (dirty & /*cellRect*/ 8) week_changes.cellRect = /*cellRect*/ ctx[3];
+    			if (dirty & /*cellSize*/ 2) week_changes.cellSize = /*cellSize*/ ctx[1];
+    			if (dirty & /*chunks*/ 16) week_changes.days = /*chunk*/ ctx[12];
     			week.$set(week_changes);
     		},
     		i(local) {
@@ -803,7 +894,7 @@
     // (3:8) {#each chunks as chunk}
     function create_each_block$1(ctx) {
     	let current;
-    	const month = new Month({ props: { days: /*chunk*/ ctx[7] } });
+    	const month = new Month({ props: { days: /*chunk*/ ctx[12] } });
 
     	return {
     		c() {
@@ -815,7 +906,7 @@
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
-    			if (dirty & /*chunks*/ 2) month_changes.days = /*chunk*/ ctx[7];
+    			if (dirty & /*chunks*/ 16) month_changes.days = /*chunk*/ ctx[12];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -837,12 +928,13 @@
     	let svg;
     	let current_block_type_index;
     	let if_block;
+    	let svg_viewBox_value;
     	let current;
     	const if_block_creators = [create_if_block, create_else_block];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*view*/ ctx[0] === "monthly") return 0;
+    		if (/*view*/ ctx[2] === "monthly") return 0;
     		return 1;
     	}
 
@@ -853,6 +945,7 @@
     		c() {
     			svg = svg_element("svg");
     			if_block.c();
+    			attr(svg, "viewBox", svg_viewBox_value = `0 0 ${/*width*/ ctx[6]} ${/*height*/ ctx[5]}`);
     		},
     		m(target, anchor) {
     			insert(target, svg, anchor);
@@ -883,6 +976,10 @@
     				transition_in(if_block, 1);
     				if_block.m(svg, null);
     			}
+
+    			if (!current || dirty & /*width, height*/ 96 && svg_viewBox_value !== (svg_viewBox_value = `0 0 ${/*width*/ ctx[6]} ${/*height*/ ctx[5]}`)) {
+    				attr(svg, "viewBox", svg_viewBox_value);
+    			}
     		},
     		i(local) {
     			if (current) return;
@@ -901,34 +998,75 @@
     }
 
     function instance$1($$self, $$props, $$invalidate) {
+    	let { cellGap = 2 } = $$props;
+    	let { cellSize = 10 } = $$props;
     	let { colors = ["#c6e48b", "#7bc96f", "#239a3b", "#196127"] } = $$props;
     	let { data = [] } = $$props;
     	let { emptyColor = "#ebedf0" } = $$props;
     	let { endDate = null } = $$props;
     	let { startDate = null } = $$props;
-    	let { view = "yearly" } = $$props;
+    	let { view = "weekly" } = $$props;
 
     	$$self.$set = $$props => {
-    		if ("colors" in $$props) $$invalidate(2, colors = $$props.colors);
-    		if ("data" in $$props) $$invalidate(3, data = $$props.data);
-    		if ("emptyColor" in $$props) $$invalidate(4, emptyColor = $$props.emptyColor);
-    		if ("endDate" in $$props) $$invalidate(5, endDate = $$props.endDate);
-    		if ("startDate" in $$props) $$invalidate(6, startDate = $$props.startDate);
-    		if ("view" in $$props) $$invalidate(0, view = $$props.view);
+    		if ("cellGap" in $$props) $$invalidate(0, cellGap = $$props.cellGap);
+    		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
+    		if ("colors" in $$props) $$invalidate(7, colors = $$props.colors);
+    		if ("data" in $$props) $$invalidate(8, data = $$props.data);
+    		if ("emptyColor" in $$props) $$invalidate(9, emptyColor = $$props.emptyColor);
+    		if ("endDate" in $$props) $$invalidate(10, endDate = $$props.endDate);
+    		if ("startDate" in $$props) $$invalidate(11, startDate = $$props.startDate);
+    		if ("view" in $$props) $$invalidate(2, view = $$props.view);
     	};
 
+    	let cellRect;
     	let chunks;
+    	let height;
+    	let width;
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*data, endDate, startDate, view*/ 105) {
-    			 $$invalidate(1, chunks = chunkCalendar({
-    				days: getCalendar({ data, endDate, startDate, view }),
+    		if ($$self.$$.dirty & /*cellSize, cellGap*/ 3) {
+    			 $$invalidate(3, cellRect = cellSize + cellGap);
+    		}
+
+    		if ($$self.$$.dirty & /*colors, data, emptyColor, endDate, startDate, view*/ 3972) {
+    			 $$invalidate(4, chunks = chunkCalendar({
+    				days: getCalendar({
+    					colors,
+    					data,
+    					emptyColor,
+    					endDate,
+    					startDate,
+    					view
+    				}),
     				view
     			}));
     		}
+
+    		if ($$self.$$.dirty & /*view, cellRect, cellGap*/ 13) {
+    			 $$invalidate(5, height = view === "monthly" ? "auto" : 7 * cellRect - cellGap);
+    		}
+
+    		if ($$self.$$.dirty & /*view, chunks, cellRect, cellGap*/ 29) {
+    			 $$invalidate(6, width = view === "monthly"
+    			? "100%"
+    			: chunks.length * cellRect - cellGap);
+    		}
     	};
 
-    	return [view, chunks, colors, data, emptyColor, endDate, startDate];
+    	return [
+    		cellGap,
+    		cellSize,
+    		view,
+    		cellRect,
+    		chunks,
+    		height,
+    		width,
+    		colors,
+    		data,
+    		emptyColor,
+    		endDate,
+    		startDate
+    	];
     }
 
     class Heatmap extends SvelteComponent {
@@ -936,12 +1074,14 @@
     		super();
 
     		init(this, options, instance$1, create_fragment$2, safe_not_equal, {
-    			colors: 2,
-    			data: 3,
-    			emptyColor: 4,
-    			endDate: 5,
-    			startDate: 6,
-    			view: 0
+    			cellGap: 0,
+    			cellSize: 1,
+    			colors: 7,
+    			data: 8,
+    			emptyColor: 9,
+    			endDate: 10,
+    			startDate: 11,
+    			view: 2
     		});
     	}
     }

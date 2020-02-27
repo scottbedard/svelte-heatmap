@@ -2,6 +2,7 @@
  * Get the last day of the month.
  *
  * @param {Date} date
+ *
  * @return {Date}
  */
 export function getMonthEnd(date) {
@@ -12,6 +13,7 @@ export function getMonthEnd(date) {
  * Get the first day of the month.
  *
  * @param {Date} date
+ *
  * @return {Date}
  */
 export function getMonthStart(date) {
@@ -22,6 +24,7 @@ export function getMonthStart(date) {
  * Get the last day of the week.
  *
  * @param {Date} date
+ *
  * @return {Date}
  */
 export function getWeekEnd(date) {
@@ -32,6 +35,7 @@ export function getWeekEnd(date) {
  * Get the first day of the week.
  *
  * @param {Date} date
+ *
  * @return {Date}
  */
 export function getWeekStart(date) {
@@ -42,6 +46,7 @@ export function getWeekStart(date) {
  * Normalize to a javascript Date object.
  *
  * @param {Date|number|string} value
+ *
  * @return {Date}
  */
 export function normalizeDate(value) {
@@ -54,4 +59,15 @@ export function normalizeDate(value) {
     }
 
     throw new Error('Invalid date value');
+}
+
+/**
+ * Stringify a date.
+ *
+ * @param {Date} date
+ * 
+ * @return {string}
+ */
+export function stringifyDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }

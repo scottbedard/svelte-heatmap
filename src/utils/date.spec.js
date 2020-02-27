@@ -4,6 +4,7 @@ import {
     getMonthStart,
     getWeekEnd,
     getWeekStart,
+    stringifyDate,
 } from './date';
 
 describe('date utils', () => {
@@ -20,7 +21,7 @@ describe('date utils', () => {
         }).forEach(([date, expected]) => {
             it(`${date} -> ${expected}`, () => {
                 const d = getMonthEnd(new Date(`${date}T00:00:00`));
-                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const actual = stringifyDate(d);
 
                 expect(actual).toBe(expected);
             });
@@ -40,7 +41,7 @@ describe('date utils', () => {
         }).forEach(([date, expected]) => {
             it(`${date} -> ${expected}`, () => {
                 const d = getMonthStart(new Date(`${date}T00:00:00`));
-                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const actual = stringifyDate(d);
 
                 expect(actual).toBe(expected);
             });
@@ -59,7 +60,7 @@ describe('date utils', () => {
         }).forEach(([date, expected]) => {
             it(`${date} -> ${expected}`, () => {
                 const d = getWeekEnd(new Date(`${date}T00:00:00`));
-                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const actual = stringifyDate(d);
 
                 expect(actual).toBe(expected);
             });
@@ -78,7 +79,7 @@ describe('date utils', () => {
         }).forEach(([date, expected]) => {
             it(`${date} -> ${expected}`, () => {
                 const d = getWeekStart(new Date(`${date}T00:00:00`));
-                const actual = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const actual = stringifyDate(d);
 
                 expect(actual).toBe(expected);
             });

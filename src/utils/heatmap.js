@@ -50,14 +50,16 @@ export function chunkCalendar({ days, view }) {
  * Determine the first day rendered on the heatmap.
  *
  * @param {Object}              props
+ * @param {Array<string>}       props.colors
  * @param {Array<Object>}       props.data
+ * @param {string}              props.emptyColor
  * @param {Date|number|string}  props.endDate
  * @param {Date|number|string}  props.startDate
  * @param {string}              props.view
  *
  * @return {Date}
  */
-export function getCalendar({ data, endDate, startDate, view }) {
+export function getCalendar({ colors, data, emptyColor, endDate, startDate, view }) {
     startDate = startDate ? normalizeDate(startDate) : new Date();
     endDate = endDate ? normalizeDate(endDate) : new Date();
 
@@ -69,17 +71,53 @@ export function getCalendar({ data, endDate, startDate, view }) {
         endDate = getWeekEnd(endDate);
     }
 
-    const days = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
+    let max = 0;
     const startDayOfMonth = startDate.getDate();
+    const totalDays = Math.floor((endDate - startDate) / 86400000) + 1; // 86400000 = 1000 * 60 * 60 * 24
 
-    return new Array(days)
+    return new Array(totalDays)
         .fill()
-        .map((x, offset) => getCalendarValue({
-            data,
-            offset,
-            startDate,
-            startDayOfMonth,
-        }));
+        .map((x, offset) => {
+            const day = getDay({ data, offset, startDate, startDayOfMonth });
+
+            if (day.value > max) {
+                max = day.value;
+            }
+
+            return day;
+        }).map(({ date, value }) => {
+            let color = getColor({ colors, max, value }) || emptyColor;
+
+            return { color, date, value }
+        });
+}
+
+/**
+ * Determine what color a value should be.
+ *
+ * @param {options}         options
+ * @param {Array<string>}   options.colors
+ * @param {number}          options.max
+ * @param {number}          options.value
+ *
+ * @return {string|null}
+ */
+export function getColor({ colors, max, value }) {
+    if (colors.length && value) {
+        let color = colors[0];
+
+        const intencity = value / max;
+
+        for (let i = 1; i < colors.length; i++) {
+            if (intencity < i / colors.length) {
+                return color;
+            }
+            
+            color = colors[i];
+        }
+    }
+
+    return null;
 }
 
 /**
@@ -93,7 +131,7 @@ export function getCalendar({ data, endDate, startDate, view }) {
  *
  * @return {Object}
  */
-export function getCalendarValue({ data, offset, startDate, startDayOfMonth }) {
+export function getDay({ data, offset, startDate, startDayOfMonth }) {
     const date = new Date(startDate);
     date.setDate(startDayOfMonth + offset);
 
@@ -103,9 +141,7 @@ export function getCalendarValue({ data, offset, startDate, startDayOfMonth }) {
     const value = data.reduce((acc, obj) => {
         const datapoint = normalizeDate(obj.date);
 
-        return datapoint >= date && datapoint < nextDate
-            ? acc + obj.value
-            : acc;
+        return datapoint >= date && datapoint < nextDate ? acc + obj.value : acc;
     }, 0);
 
     return { date, value };
