@@ -1,9 +1,10 @@
 import {
-    normalizeDate,
     getMonthEnd,
     getMonthStart,
     getWeekEnd,
+    getWeekIndex,
     getWeekStart,
+    normalizeDate,
     stringifyDate,
 } from './date';
 
@@ -63,6 +64,27 @@ describe('date utils', () => {
                 const actual = stringifyDate(d);
 
                 expect(actual).toBe(expected);
+            });
+        });
+    });
+
+    //
+    // getWeekIndex
+    //
+    describe.only('getWeekIndex', () => {
+        Object.entries({
+            '2020-01-01': 0,
+            '2020-01-04': 0,
+            '2020-01-05': 1,
+            '2020-01-08': 1,
+            '2020-01-15': 2,
+            '2020-01-22': 3,
+            '2020-01-31': 4,
+        }).forEach(([date, expected]) => {
+            it(`${date} -> ${expected}`, () => {
+                const index = getWeekIndex(new Date(`${date}T00:00:00`));
+
+                expect(index).toEqual(expected);
             });
         });
     });

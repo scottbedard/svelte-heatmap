@@ -118,6 +118,8 @@ export function getColor({ colors, max, value }) {
             
             color = colors[i];
         }
+
+        return colors[colors.length - 1];
     }
 
     return null;

@@ -32,6 +32,20 @@ export function getWeekEnd(date) {
 }
 
 /**
+ * Return the week index of a date.
+ *
+ * @param {Date} date
+ *
+ * @return {number}
+ */
+export function getWeekIndex(date) {
+    const firstWeekday = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    const offsetDate = date.getDate() + firstWeekday - 1;
+
+    return Math.floor(offsetDate / 7);
+}
+
+/**
  * Get the first day of the week.
  *
  * @param {Date} date
