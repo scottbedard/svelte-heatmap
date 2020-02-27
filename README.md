@@ -8,7 +8,24 @@ Soon...
 
 ## Basic usage
 
-Soon...
+To create a heatmap, pass `props` and a `target` to the `Heatmap` constructor.
+
+```js
+const heatmap = new Heatmap({
+    props: {
+        // ...
+    },
+    target: '#some-container',
+});
+```
+
+To remove the component, call `$destroy`. This will remove all elements from the DOM and unbind any event listeners.
+
+```js
+heatmap.$destroy();
+```
+
+See the [Svelte documentation](https://svelte.dev/docs#Client-side_component_API) for more information. 
 
 ## Props
 
