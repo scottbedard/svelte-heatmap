@@ -5,7 +5,7 @@
                 cellGap={cellGap}
                 cellRect={cellRect}
                 cellSize={cellSize}
-                chunkGap={chunkGap}
+                monthGap={monthGap}
                 days={chunk}
                 index={index}
             />
@@ -13,10 +13,8 @@
     {:else}
         {#each chunks as chunk, index}
             <Week
-                cellGap={cellGap}
                 cellRect={cellRect}
                 cellSize={cellSize}
-                chunkGap={chunkGap}
                 days={chunk}
                 index={index}
             />
@@ -36,11 +34,11 @@ import Week from './views/Week.svelte';
 
 export let cellGap = 2;
 export let cellSize = 10;
-export let chunkGap = 10;
 export let colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
 export let data = [];
 export let emptyColor = '#ebedf0';
 export let endDate = null;
+export let monthGap = 2;
 export let startDate = null;
 export let view = 'weekly';
 
@@ -57,6 +55,6 @@ $: height = view === 'monthly'
     : (7 * cellRect) - cellGap
 
 $: width = view === 'monthly'
-    ? ((((7 * cellRect) - cellGap) + chunkGap) * chunks.length) - chunkGap
-    : (chunks.length * cellRect) - cellGap;
+    ? ((((7 * cellRect) - cellGap) + monthGap) * chunks.length) - monthGap
+    : (cellRect * chunks.length) - cellGap;
 </script>

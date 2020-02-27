@@ -1,4 +1,4 @@
-<g transform={`translate(${index * cellRect}, 0)`}>
+<g transform={`translate(${translation}, 0)`}>
     {#each days as day, index}
         <rect
             data-date={stringifyDate(day.date)}
@@ -14,7 +14,8 @@
 <script>
 import { stringifyDate } from '../utils/date';
 
-export let cellGap;
+$: translation = cellRect * index;
+
 export let cellRect;
 export let cellSize;
 export let days;

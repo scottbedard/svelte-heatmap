@@ -15,12 +15,12 @@
 <script>
 import { getWeekIndex, stringifyDate } from '../utils/date';
 
-$: translation = (((7 * cellRect) - cellGap) + chunkGap) * index;
+$: translation = (((7 * cellRect) - cellGap) + monthGap) * index;
 
 export let cellGap;
 export let cellRect;
 export let cellSize;
-export let chunkGap;
 export let days;
 export let index;
+export let monthGap;
 </script>

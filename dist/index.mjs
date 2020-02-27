@@ -633,28 +633,28 @@ function instance($$self, $$props, $$invalidate) {
 	let { cellGap } = $$props;
 	let { cellRect } = $$props;
 	let { cellSize } = $$props;
-	let { chunkGap } = $$props;
 	let { days } = $$props;
 	let { index } = $$props;
+	let { monthGap } = $$props;
 
 	$$self.$set = $$props => {
 		if ("cellGap" in $$props) $$invalidate(4, cellGap = $$props.cellGap);
 		if ("cellRect" in $$props) $$invalidate(0, cellRect = $$props.cellRect);
 		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
-		if ("chunkGap" in $$props) $$invalidate(5, chunkGap = $$props.chunkGap);
 		if ("days" in $$props) $$invalidate(2, days = $$props.days);
 		if ("index" in $$props) $$invalidate(6, index = $$props.index);
+		if ("monthGap" in $$props) $$invalidate(5, monthGap = $$props.monthGap);
 	};
 
 	let translation;
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*cellRect, cellGap, chunkGap, index*/ 113) {
-			 $$invalidate(3, translation = (7 * cellRect - cellGap + chunkGap) * index);
+		if ($$self.$$.dirty & /*cellRect, cellGap, monthGap, index*/ 113) {
+			 $$invalidate(3, translation = (7 * cellRect - cellGap + monthGap) * index);
 		}
 	};
 
-	return [cellRect, cellSize, days, translation, cellGap, chunkGap, index];
+	return [cellRect, cellSize, days, translation, cellGap, monthGap, index];
 }
 
 class Month extends SvelteComponent {
@@ -665,9 +665,9 @@ class Month extends SvelteComponent {
 			cellGap: 4,
 			cellRect: 0,
 			cellSize: 1,
-			chunkGap: 5,
 			days: 2,
-			index: 6
+			index: 6,
+			monthGap: 5
 		});
 	}
 }
@@ -751,7 +751,7 @@ function create_fragment$1(ctx) {
 				each_blocks[i].c();
 			}
 
-			attr(g, "transform", g_transform_value = `translate(${/*index*/ ctx[3] * /*cellRect*/ ctx[0]}, 0)`);
+			attr(g, "transform", g_transform_value = `translate(${/*translation*/ ctx[4]}, 0)`);
 		},
 		m(target, anchor) {
 			insert(target, g, anchor);
@@ -784,7 +784,7 @@ function create_fragment$1(ctx) {
 				each_blocks.length = each_value.length;
 			}
 
-			if (dirty & /*index, cellRect*/ 9 && g_transform_value !== (g_transform_value = `translate(${/*index*/ ctx[3] * /*cellRect*/ ctx[0]}, 0)`)) {
+			if (dirty & /*translation*/ 16 && g_transform_value !== (g_transform_value = `translate(${/*translation*/ ctx[4]}, 0)`)) {
 				attr(g, "transform", g_transform_value);
 			}
 		},
@@ -798,21 +798,27 @@ function create_fragment$1(ctx) {
 }
 
 function instance$1($$self, $$props, $$invalidate) {
-	let { cellGap } = $$props;
 	let { cellRect } = $$props;
 	let { cellSize } = $$props;
 	let { days } = $$props;
 	let { index } = $$props;
 
 	$$self.$set = $$props => {
-		if ("cellGap" in $$props) $$invalidate(4, cellGap = $$props.cellGap);
 		if ("cellRect" in $$props) $$invalidate(0, cellRect = $$props.cellRect);
 		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
 		if ("days" in $$props) $$invalidate(2, days = $$props.days);
 		if ("index" in $$props) $$invalidate(3, index = $$props.index);
 	};
 
-	return [cellRect, cellSize, days, index, cellGap];
+	let translation;
+
+	$$self.$$.update = () => {
+		if ($$self.$$.dirty & /*cellRect, index*/ 9) {
+			 $$invalidate(4, translation = cellRect * index);
+		}
+	};
+
+	return [cellRect, cellSize, days, index, translation];
 }
 
 class Week extends SvelteComponent {
@@ -820,7 +826,6 @@ class Week extends SvelteComponent {
 		super();
 
 		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
-			cellGap: 4,
 			cellRect: 0,
 			cellSize: 1,
 			days: 2,
@@ -877,7 +882,7 @@ function create_else_block(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if (dirty & /*cellGap, cellRect, cellSize, chunkGap, chunks*/ 55) {
+			if (dirty & /*cellRect, cellSize, chunks*/ 50) {
 				each_value_1 = /*chunks*/ ctx[5];
 				let i;
 
@@ -961,7 +966,7 @@ function create_if_block(ctx) {
 			current = true;
 		},
 		p(ctx, dirty) {
-			if (dirty & /*cellGap, cellRect, cellSize, chunkGap, chunks*/ 55) {
+			if (dirty & /*cellGap, cellRect, cellSize, monthGap, chunks*/ 55) {
 				each_value = /*chunks*/ ctx[5];
 				let i;
 
@@ -1019,10 +1024,8 @@ function create_each_block_1(ctx) {
 
 	const week = new Week({
 			props: {
-				cellGap: /*cellGap*/ ctx[0],
 				cellRect: /*cellRect*/ ctx[4],
 				cellSize: /*cellSize*/ ctx[1],
-				chunkGap: /*chunkGap*/ ctx[2],
 				days: /*chunk*/ ctx[14],
 				index: /*index*/ ctx[16]
 			}
@@ -1038,10 +1041,8 @@ function create_each_block_1(ctx) {
 		},
 		p(ctx, dirty) {
 			const week_changes = {};
-			if (dirty & /*cellGap*/ 1) week_changes.cellGap = /*cellGap*/ ctx[0];
 			if (dirty & /*cellRect*/ 16) week_changes.cellRect = /*cellRect*/ ctx[4];
 			if (dirty & /*cellSize*/ 2) week_changes.cellSize = /*cellSize*/ ctx[1];
-			if (dirty & /*chunkGap*/ 4) week_changes.chunkGap = /*chunkGap*/ ctx[2];
 			if (dirty & /*chunks*/ 32) week_changes.days = /*chunk*/ ctx[14];
 			week.$set(week_changes);
 		},
@@ -1069,7 +1070,7 @@ function create_each_block$2(ctx) {
 				cellGap: /*cellGap*/ ctx[0],
 				cellRect: /*cellRect*/ ctx[4],
 				cellSize: /*cellSize*/ ctx[1],
-				chunkGap: /*chunkGap*/ ctx[2],
+				monthGap: /*monthGap*/ ctx[2],
 				days: /*chunk*/ ctx[14],
 				index: /*index*/ ctx[16]
 			}
@@ -1088,7 +1089,7 @@ function create_each_block$2(ctx) {
 			if (dirty & /*cellGap*/ 1) month_changes.cellGap = /*cellGap*/ ctx[0];
 			if (dirty & /*cellRect*/ 16) month_changes.cellRect = /*cellRect*/ ctx[4];
 			if (dirty & /*cellSize*/ 2) month_changes.cellSize = /*cellSize*/ ctx[1];
-			if (dirty & /*chunkGap*/ 4) month_changes.chunkGap = /*chunkGap*/ ctx[2];
+			if (dirty & /*monthGap*/ 4) month_changes.monthGap = /*monthGap*/ ctx[2];
 			if (dirty & /*chunks*/ 32) month_changes.days = /*chunk*/ ctx[14];
 			month.$set(month_changes);
 		},
@@ -1183,22 +1184,22 @@ function create_fragment$2(ctx) {
 function instance$2($$self, $$props, $$invalidate) {
 	let { cellGap = 2 } = $$props;
 	let { cellSize = 10 } = $$props;
-	let { chunkGap = 10 } = $$props;
 	let { colors = ["#c6e48b", "#7bc96f", "#239a3b", "#196127"] } = $$props;
 	let { data = [] } = $$props;
 	let { emptyColor = "#ebedf0" } = $$props;
 	let { endDate = null } = $$props;
+	let { monthGap = 2 } = $$props;
 	let { startDate = null } = $$props;
 	let { view = "weekly" } = $$props;
 
 	$$self.$set = $$props => {
 		if ("cellGap" in $$props) $$invalidate(0, cellGap = $$props.cellGap);
 		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
-		if ("chunkGap" in $$props) $$invalidate(2, chunkGap = $$props.chunkGap);
 		if ("colors" in $$props) $$invalidate(8, colors = $$props.colors);
 		if ("data" in $$props) $$invalidate(9, data = $$props.data);
 		if ("emptyColor" in $$props) $$invalidate(10, emptyColor = $$props.emptyColor);
 		if ("endDate" in $$props) $$invalidate(11, endDate = $$props.endDate);
+		if ("monthGap" in $$props) $$invalidate(2, monthGap = $$props.monthGap);
 		if ("startDate" in $$props) $$invalidate(12, startDate = $$props.startDate);
 		if ("view" in $$props) $$invalidate(3, view = $$props.view);
 	};
@@ -1237,17 +1238,17 @@ function instance$2($$self, $$props, $$invalidate) {
 			: 7 * cellRect - cellGap);
 		}
 
-		if ($$self.$$.dirty & /*view, cellRect, cellGap, chunkGap, chunks*/ 61) {
+		if ($$self.$$.dirty & /*view, cellRect, cellGap, monthGap, chunks*/ 61) {
 			 $$invalidate(7, width = view === "monthly"
-			? (7 * cellRect - cellGap + chunkGap) * chunks.length - chunkGap
-			: chunks.length * cellRect - cellGap);
+			? (7 * cellRect - cellGap + monthGap) * chunks.length - monthGap
+			: cellRect * chunks.length - cellGap);
 		}
 	};
 
 	return [
 		cellGap,
 		cellSize,
-		chunkGap,
+		monthGap,
 		view,
 		cellRect,
 		chunks,
@@ -1268,11 +1269,11 @@ class Heatmap extends SvelteComponent {
 		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
 			cellGap: 0,
 			cellSize: 1,
-			chunkGap: 2,
 			colors: 8,
 			data: 9,
 			emptyColor: 10,
 			endDate: 11,
+			monthGap: 2,
 			startDate: 12,
 			view: 3
 		});
