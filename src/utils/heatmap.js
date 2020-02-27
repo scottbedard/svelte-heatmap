@@ -7,35 +7,38 @@ import {
 } from './date';
 
 /**
- * Divide an array of days into weekly / monthly chunks.
+ * Divide a calendar into months.
  *
- * @param {Object}          options
- * @param {Array<Object>}   options.days
- * @param {string}          options.view
+ * @param {Array<Object>}   calendar
  *
  * @return {Array<Array<Object>>} 
  */
-export function chunkCalendar({ days, view }) {
-    // monthly
-    if (view === 'monthly') {
-        let prevMonth = -1;
+export function chunkMonths(calendar) {
+    let prevMonth = -1;
 
-        return days.reduce((acc, day) => {
-            const currentMonth = day.date.getMonth();
+    return calendar.reduce((acc, day) => {
+        const currentMonth = day.date.getMonth();
 
-            if (prevMonth !== currentMonth) {
-                acc.push([]);
-                prevMonth = currentMonth;
-            }
+        if (prevMonth !== currentMonth) {
+            acc.push([]);
+            prevMonth = currentMonth;
+        }
 
-            acc[acc.length - 1].push(day);
+        acc[acc.length - 1].push(day);
 
-            return acc;
-        }, []);
-    }
+        return acc;
+    }, []);
+}
 
-    // weekly
-    return days.reduce((acc, day, index) => {
+/**
+ * Divide a calendar into weeks.
+ *
+ * @param {Array<Object>}   calendar
+ *
+ * @return {Array<Array<Object>>} 
+ */
+export function chunkWeeks(calendar) {
+    return calendar.reduce((acc, day, index) => {
         if (index % 7 === 0) {
             acc.push([]);
         }

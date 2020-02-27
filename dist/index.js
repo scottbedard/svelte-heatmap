@@ -337,35 +337,38 @@
     }
 
     /**
-     * Divide an array of days into weekly / monthly chunks.
+     * Divide a calendar into months.
      *
-     * @param {Object}          options
-     * @param {Array<Object>}   options.days
-     * @param {string}          options.view
+     * @param {Array<Object>}   calendar
      *
      * @return {Array<Array<Object>>} 
      */
-    function chunkCalendar({ days, view }) {
-        // monthly
-        if (view === 'monthly') {
-            let prevMonth = -1;
+    function chunkMonths(calendar) {
+        let prevMonth = -1;
 
-            return days.reduce((acc, day) => {
-                const currentMonth = day.date.getMonth();
+        return calendar.reduce((acc, day) => {
+            const currentMonth = day.date.getMonth();
 
-                if (prevMonth !== currentMonth) {
-                    acc.push([]);
-                    prevMonth = currentMonth;
-                }
+            if (prevMonth !== currentMonth) {
+                acc.push([]);
+                prevMonth = currentMonth;
+            }
 
-                acc[acc.length - 1].push(day);
+            acc[acc.length - 1].push(day);
 
-                return acc;
-            }, []);
-        }
+            return acc;
+        }, []);
+    }
 
-        // weekly
-        return days.reduce((acc, day, index) => {
+    /**
+     * Divide a calendar into weeks.
+     *
+     * @param {Array<Object>}   calendar
+     *
+     * @return {Array<Array<Object>>} 
+     */
+    function chunkWeeks(calendar) {
+        return calendar.reduce((acc, day, index) => {
             if (index % 7 === 0) {
                 acc.push([]);
             }
@@ -667,14 +670,14 @@
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[12] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[13] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[12] = list[i];
+    	child_ctx[13] = list[i];
     	return child_ctx;
     }
 
@@ -855,8 +858,8 @@
     				cellGap: /*cellGap*/ ctx[0],
     				cellRect: /*cellRect*/ ctx[3],
     				cellSize: /*cellSize*/ ctx[1],
-    				days: /*chunk*/ ctx[12],
-    				index: /*index*/ ctx[16]
+    				days: /*chunk*/ ctx[13],
+    				index: /*index*/ ctx[17]
     			}
     		});
 
@@ -873,7 +876,7 @@
     			if (dirty & /*cellGap*/ 1) week_changes.cellGap = /*cellGap*/ ctx[0];
     			if (dirty & /*cellRect*/ 8) week_changes.cellRect = /*cellRect*/ ctx[3];
     			if (dirty & /*cellSize*/ 2) week_changes.cellSize = /*cellSize*/ ctx[1];
-    			if (dirty & /*chunks*/ 16) week_changes.days = /*chunk*/ ctx[12];
+    			if (dirty & /*chunks*/ 16) week_changes.days = /*chunk*/ ctx[13];
     			week.$set(week_changes);
     		},
     		i(local) {
@@ -894,7 +897,7 @@
     // (3:8) {#each chunks as chunk}
     function create_each_block$1(ctx) {
     	let current;
-    	const month = new Month({ props: { days: /*chunk*/ ctx[12] } });
+    	const month = new Month({ props: { days: /*chunk*/ ctx[13] } });
 
     	return {
     		c() {
@@ -906,7 +909,7 @@
     		},
     		p(ctx, dirty) {
     			const month_changes = {};
-    			if (dirty & /*chunks*/ 16) month_changes.days = /*chunk*/ ctx[12];
+    			if (dirty & /*chunks*/ 16) month_changes.days = /*chunk*/ ctx[13];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -1019,6 +1022,7 @@
     	};
 
     	let cellRect;
+    	let calendar;
     	let chunks;
     	let height;
     	let width;
@@ -1029,17 +1033,20 @@
     		}
 
     		if ($$self.$$.dirty & /*colors, data, emptyColor, endDate, startDate, view*/ 3972) {
-    			 $$invalidate(4, chunks = chunkCalendar({
-    				days: getCalendar({
-    					colors,
-    					data,
-    					emptyColor,
-    					endDate,
-    					startDate,
-    					view
-    				}),
+    			 $$invalidate(12, calendar = getCalendar({
+    				colors,
+    				data,
+    				emptyColor,
+    				endDate,
+    				startDate,
     				view
     			}));
+    		}
+
+    		if ($$self.$$.dirty & /*view, calendar*/ 4100) {
+    			 $$invalidate(4, chunks = view === "monthly"
+    			? chunkMonths(calendar)
+    			: chunkWeeks(calendar));
     		}
 
     		if ($$self.$$.dirty & /*view, cellRect, cellGap*/ 13) {

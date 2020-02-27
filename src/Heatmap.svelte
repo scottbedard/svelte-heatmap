@@ -18,7 +18,8 @@
 
 <script>
 import {
-    chunkCalendar,
+    chunkMonths,
+    chunkWeeks,
     getCalendar,
 } from './utils/heatmap';
 
@@ -36,10 +37,11 @@ export let view = 'weekly';
 
 $: cellRect = cellSize + cellGap;
 
-$: chunks = chunkCalendar({
-    days: getCalendar({ colors, data, emptyColor, endDate, startDate, view }),
-    view,
-});
+$: calendar = getCalendar({ colors, data, emptyColor, endDate, startDate, view });
+
+$: chunks = view === 'monthly'
+    ? chunkMonths(calendar)
+    : chunkWeeks(calendar);
 
 $: height = view === 'monthly'
     ? 'auto'
