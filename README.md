@@ -12,12 +12,7 @@ Soon...
 
 ## Props
 
-> **Note:** Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a `string` or `number` compatible with the Date constructor.
-
-####
-#### `data`
-
-Array of objects containing the chart data. These objects should be in the shape of `{ date, value }`.
+Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a `string` or `number` compatible with the Date constructor.
 
 ##### `cellGap`
 
@@ -30,6 +25,10 @@ Defines the size of each cell.
 ##### `colors`
 
 Array of CSS colors to use for the chart, ordered from lowest to highest. Default colors match the GitHub contribution graph.
+
+##### `data`
+
+Array of objects containing the chart data. These objects should be in the shape of `{ date, value }`.
 
 ##### `emptyColor`
 
