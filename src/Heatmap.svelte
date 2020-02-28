@@ -11,14 +11,29 @@
             />
         {/each}
     {:else}
-        {#each chunks as chunk, index}
-            <Week
-                cellRect={cellRect}
-                cellSize={cellSize}
-                days={chunk}
-                index={index}
-            />
-        {/each}
+        {#if dayLabelWidth > 0}
+            {#each dayLabels as label, index}
+                <text
+                    alignment-baseline="middle"
+                    fill={fontColor}
+                    font-family={fontFamily}
+                    font-size={fontSize}
+                    x="0"
+                    y={weekDayLabel(index)}>
+                    {label}
+                </text>
+            {/each}
+        {/if}
+        <g transform={`translate(${dayLabelWidth})`}>
+            {#each chunks as chunk, index}
+                <Week
+                    cellRect={cellRect}
+                    cellSize={cellSize}
+                    days={chunk}
+                    index={index}
+                />
+            {/each}
+        </g>
     {/if}
 </svg>
 
@@ -37,8 +52,13 @@ export let cellGap = 2;
 export let cellSize = 10;
 export let colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
 export let data = [];
+export let dayLabelWidth = 20;
+export let dayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
 export let emptyColor = '#ebedf0';
 export let endDate = null;
+export let fontColor = '#333';
+export let fontFamily = 'sans-serif';
+export let fontSize = 8;
 export let monthGap = 2;
 export let startDate = null;
 export let view = 'weekly';
@@ -51,11 +71,17 @@ $: chunks = view === 'monthly'
     ? chunkMonths({ allowOverflow, calendar, endDate, startDate })
     : chunkWeeks({ allowOverflow, calendar, endDate, startDate });
 
+$: weekRect = (7 * cellRect) - cellGap;
+
 $: height = view === 'monthly'
-    ? (6 * cellRect) - cellGap
-    : (7 * cellRect) - cellGap
+    ? (6 * cellRect) - cellGap // <- max of 6 rows in monthly view
+    : weekRect;
 
 $: width = view === 'monthly'
-    ? ((((7 * cellRect) - cellGap) + monthGap) * chunks.length) - monthGap
-    : (cellRect * chunks.length) - cellGap;
+    ? ((weekRect + monthGap) * chunks.length) - monthGap + dayLabelWidth
+    : (cellRect * chunks.length) - cellGap + dayLabelWidth;
+
+$: weekDayLabel = index => {
+    return (cellRect * index) + (cellRect / 2);
+}
 </script>

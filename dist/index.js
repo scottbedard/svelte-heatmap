@@ -20,6 +20,10 @@
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
+
+    function append(target, node) {
+        target.appendChild(node);
+    }
     function insert(target, node, anchor) {
         target.insertBefore(node, anchor || null);
     }
@@ -49,6 +53,11 @@
     }
     function children(element) {
         return Array.from(element.childNodes);
+    }
+    function set_data(text, data) {
+        data = '' + data;
+        if (text.data !== data)
+            text.data = data;
     }
 
     let current_component;
@@ -873,23 +882,32 @@
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[15] = list[i];
-    	child_ctx[17] = i;
+    	child_ctx[22] = list[i];
+    	child_ctx[24] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[26] = list[i];
+    	child_ctx[24] = i;
     	return child_ctx;
     }
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[15] = list[i];
-    	child_ctx[17] = i;
+    	child_ctx[22] = list[i];
+    	child_ctx[24] = i;
     	return child_ctx;
     }
 
     // (13:4) {:else}
     function create_else_block(ctx) {
-    	let each_1_anchor;
+    	let g;
+    	let g_transform_value;
     	let current;
-    	let each_value_1 = /*chunks*/ ctx[5];
+    	let if_block = /*dayLabelWidth*/ ctx[2] > 0 && create_if_block_1(ctx);
+    	let each_value_1 = /*chunks*/ ctx[10];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -902,23 +920,41 @@
 
     	return {
     		c() {
+    			if (if_block) if_block.c();
+    			g = svg_element("g");
+
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			each_1_anchor = empty();
+    			attr(g, "transform", g_transform_value = `translate(${/*dayLabelWidth*/ ctx[2]})`);
     		},
     		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, g, anchor);
+
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(target, anchor);
+    				each_blocks[i].m(g, null);
     			}
 
-    			insert(target, each_1_anchor, anchor);
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*cellRect, cellSize, chunks*/ 50) {
-    				each_value_1 = /*chunks*/ ctx[5];
+    			if (/*dayLabelWidth*/ ctx[2] > 0) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block_1(ctx);
+    					if_block.c();
+    					if_block.m(g.parentNode, g);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if (dirty & /*cellRect, cellSize, chunks*/ 1538) {
+    				each_value_1 = /*chunks*/ ctx[10];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -931,7 +967,7 @@
     						each_blocks[i] = create_each_block_1(child_ctx);
     						each_blocks[i].c();
     						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    						each_blocks[i].m(g, null);
     					}
     				}
 
@@ -942,6 +978,10 @@
     				}
 
     				check_outros();
+    			}
+
+    			if (!current || dirty & /*dayLabelWidth*/ 4 && g_transform_value !== (g_transform_value = `translate(${/*dayLabelWidth*/ ctx[2]})`)) {
+    				attr(g, "transform", g_transform_value);
     			}
     		},
     		i(local) {
@@ -963,8 +1003,9 @@
     			current = false;
     		},
     		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(g);
     			destroy_each(each_blocks, detaching);
-    			if (detaching) detach(each_1_anchor);
     		}
     	};
     }
@@ -973,7 +1014,7 @@
     function create_if_block(ctx) {
     	let each_1_anchor;
     	let current;
-    	let each_value = /*chunks*/ ctx[5];
+    	let each_value = /*chunks*/ ctx[10];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1001,8 +1042,8 @@
     			current = true;
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*cellGap, cellRect, cellSize, monthGap, chunks*/ 55) {
-    				each_value = /*chunks*/ ctx[5];
+    			if (dirty & /*cellGap, cellRect, cellSize, monthGap, chunks*/ 1667) {
+    				each_value = /*chunks*/ ctx[10];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1053,16 +1094,119 @@
     	};
     }
 
-    // (14:8) {#each chunks as chunk, index}
+    // (14:8) {#if dayLabelWidth > 0}
+    function create_if_block_1(ctx) {
+    	let each_1_anchor;
+    	let each_value_2 = /*dayLabels*/ ctx[3];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    	}
+
+    	return {
+    		c() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(target, anchor);
+    			}
+
+    			insert(target, each_1_anchor, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*fontColor, fontFamily, fontSize, weekDayLabel, dayLabels*/ 8312) {
+    				each_value_2 = /*dayLabels*/ ctx[3];
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_2(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_2.length;
+    			}
+    		},
+    		d(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach(each_1_anchor);
+    		}
+    	};
+    }
+
+    // (15:12) {#each dayLabels as label, index}
+    function create_each_block_2(ctx) {
+    	let text_1;
+    	let t_value = /*label*/ ctx[26] + "";
+    	let t;
+    	let text_1_y_value;
+
+    	return {
+    		c() {
+    			text_1 = svg_element("text");
+    			t = text(t_value);
+    			attr(text_1, "alignment-baseline", "middle");
+    			attr(text_1, "fill", /*fontColor*/ ctx[4]);
+    			attr(text_1, "font-family", /*fontFamily*/ ctx[5]);
+    			attr(text_1, "font-size", /*fontSize*/ ctx[6]);
+    			attr(text_1, "x", "0");
+    			attr(text_1, "y", text_1_y_value = /*weekDayLabel*/ ctx[13](/*index*/ ctx[24]));
+    		},
+    		m(target, anchor) {
+    			insert(target, text_1, anchor);
+    			append(text_1, t);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*dayLabels*/ 8 && t_value !== (t_value = /*label*/ ctx[26] + "")) set_data(t, t_value);
+
+    			if (dirty & /*fontColor*/ 16) {
+    				attr(text_1, "fill", /*fontColor*/ ctx[4]);
+    			}
+
+    			if (dirty & /*fontFamily*/ 32) {
+    				attr(text_1, "font-family", /*fontFamily*/ ctx[5]);
+    			}
+
+    			if (dirty & /*fontSize*/ 64) {
+    				attr(text_1, "font-size", /*fontSize*/ ctx[6]);
+    			}
+
+    			if (dirty & /*weekDayLabel*/ 8192 && text_1_y_value !== (text_1_y_value = /*weekDayLabel*/ ctx[13](/*index*/ ctx[24]))) {
+    				attr(text_1, "y", text_1_y_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(text_1);
+    		}
+    	};
+    }
+
+    // (28:12) {#each chunks as chunk, index}
     function create_each_block_1(ctx) {
     	let current;
 
     	const week = new Week({
     			props: {
-    				cellRect: /*cellRect*/ ctx[4],
+    				cellRect: /*cellRect*/ ctx[9],
     				cellSize: /*cellSize*/ ctx[1],
-    				days: /*chunk*/ ctx[15],
-    				index: /*index*/ ctx[17]
+    				days: /*chunk*/ ctx[22],
+    				index: /*index*/ ctx[24]
     			}
     		});
 
@@ -1076,9 +1220,9 @@
     		},
     		p(ctx, dirty) {
     			const week_changes = {};
-    			if (dirty & /*cellRect*/ 16) week_changes.cellRect = /*cellRect*/ ctx[4];
+    			if (dirty & /*cellRect*/ 512) week_changes.cellRect = /*cellRect*/ ctx[9];
     			if (dirty & /*cellSize*/ 2) week_changes.cellSize = /*cellSize*/ ctx[1];
-    			if (dirty & /*chunks*/ 32) week_changes.days = /*chunk*/ ctx[15];
+    			if (dirty & /*chunks*/ 1024) week_changes.days = /*chunk*/ ctx[22];
     			week.$set(week_changes);
     		},
     		i(local) {
@@ -1103,11 +1247,11 @@
     	const month = new Month({
     			props: {
     				cellGap: /*cellGap*/ ctx[0],
-    				cellRect: /*cellRect*/ ctx[4],
+    				cellRect: /*cellRect*/ ctx[9],
     				cellSize: /*cellSize*/ ctx[1],
-    				monthGap: /*monthGap*/ ctx[2],
-    				days: /*chunk*/ ctx[15],
-    				index: /*index*/ ctx[17]
+    				monthGap: /*monthGap*/ ctx[7],
+    				days: /*chunk*/ ctx[22],
+    				index: /*index*/ ctx[24]
     			}
     		});
 
@@ -1122,10 +1266,10 @@
     		p(ctx, dirty) {
     			const month_changes = {};
     			if (dirty & /*cellGap*/ 1) month_changes.cellGap = /*cellGap*/ ctx[0];
-    			if (dirty & /*cellRect*/ 16) month_changes.cellRect = /*cellRect*/ ctx[4];
+    			if (dirty & /*cellRect*/ 512) month_changes.cellRect = /*cellRect*/ ctx[9];
     			if (dirty & /*cellSize*/ 2) month_changes.cellSize = /*cellSize*/ ctx[1];
-    			if (dirty & /*monthGap*/ 4) month_changes.monthGap = /*monthGap*/ ctx[2];
-    			if (dirty & /*chunks*/ 32) month_changes.days = /*chunk*/ ctx[15];
+    			if (dirty & /*monthGap*/ 128) month_changes.monthGap = /*monthGap*/ ctx[7];
+    			if (dirty & /*chunks*/ 1024) month_changes.days = /*chunk*/ ctx[22];
     			month.$set(month_changes);
     		},
     		i(local) {
@@ -1153,7 +1297,7 @@
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*view*/ ctx[3] === "monthly") return 0;
+    		if (/*view*/ ctx[8] === "monthly") return 0;
     		return 1;
     	}
 
@@ -1164,7 +1308,7 @@
     		c() {
     			svg = svg_element("svg");
     			if_block.c();
-    			attr(svg, "viewBox", svg_viewBox_value = `0 0 ${/*width*/ ctx[7]} ${/*height*/ ctx[6]}`);
+    			attr(svg, "viewBox", svg_viewBox_value = `0 0 ${/*width*/ ctx[12]} ${/*height*/ ctx[11]}`);
     		},
     		m(target, anchor) {
     			insert(target, svg, anchor);
@@ -1196,7 +1340,7 @@
     				if_block.m(svg, null);
     			}
 
-    			if (!current || dirty & /*width, height*/ 192 && svg_viewBox_value !== (svg_viewBox_value = `0 0 ${/*width*/ ctx[7]} ${/*height*/ ctx[6]}`)) {
+    			if (!current || dirty & /*width, height*/ 6144 && svg_viewBox_value !== (svg_viewBox_value = `0 0 ${/*width*/ ctx[12]} ${/*height*/ ctx[11]}`)) {
     				attr(svg, "viewBox", svg_viewBox_value);
     			}
     		},
@@ -1222,38 +1366,50 @@
     	let { cellSize = 10 } = $$props;
     	let { colors = ["#c6e48b", "#7bc96f", "#239a3b", "#196127"] } = $$props;
     	let { data = [] } = $$props;
+    	let { dayLabelWidth = 20 } = $$props;
+    	let { dayLabels = ["", "Mon", "", "Wed", "", "Fri", ""] } = $$props;
     	let { emptyColor = "#ebedf0" } = $$props;
     	let { endDate = null } = $$props;
+    	let { fontColor = "#333" } = $$props;
+    	let { fontFamily = "sans-serif" } = $$props;
+    	let { fontSize = 8 } = $$props;
     	let { monthGap = 2 } = $$props;
     	let { startDate = null } = $$props;
     	let { view = "weekly" } = $$props;
 
     	$$self.$set = $$props => {
-    		if ("allowOverflow" in $$props) $$invalidate(8, allowOverflow = $$props.allowOverflow);
+    		if ("allowOverflow" in $$props) $$invalidate(14, allowOverflow = $$props.allowOverflow);
     		if ("cellGap" in $$props) $$invalidate(0, cellGap = $$props.cellGap);
     		if ("cellSize" in $$props) $$invalidate(1, cellSize = $$props.cellSize);
-    		if ("colors" in $$props) $$invalidate(9, colors = $$props.colors);
-    		if ("data" in $$props) $$invalidate(10, data = $$props.data);
-    		if ("emptyColor" in $$props) $$invalidate(11, emptyColor = $$props.emptyColor);
-    		if ("endDate" in $$props) $$invalidate(12, endDate = $$props.endDate);
-    		if ("monthGap" in $$props) $$invalidate(2, monthGap = $$props.monthGap);
-    		if ("startDate" in $$props) $$invalidate(13, startDate = $$props.startDate);
-    		if ("view" in $$props) $$invalidate(3, view = $$props.view);
+    		if ("colors" in $$props) $$invalidate(15, colors = $$props.colors);
+    		if ("data" in $$props) $$invalidate(16, data = $$props.data);
+    		if ("dayLabelWidth" in $$props) $$invalidate(2, dayLabelWidth = $$props.dayLabelWidth);
+    		if ("dayLabels" in $$props) $$invalidate(3, dayLabels = $$props.dayLabels);
+    		if ("emptyColor" in $$props) $$invalidate(17, emptyColor = $$props.emptyColor);
+    		if ("endDate" in $$props) $$invalidate(18, endDate = $$props.endDate);
+    		if ("fontColor" in $$props) $$invalidate(4, fontColor = $$props.fontColor);
+    		if ("fontFamily" in $$props) $$invalidate(5, fontFamily = $$props.fontFamily);
+    		if ("fontSize" in $$props) $$invalidate(6, fontSize = $$props.fontSize);
+    		if ("monthGap" in $$props) $$invalidate(7, monthGap = $$props.monthGap);
+    		if ("startDate" in $$props) $$invalidate(19, startDate = $$props.startDate);
+    		if ("view" in $$props) $$invalidate(8, view = $$props.view);
     	};
 
     	let cellRect;
     	let calendar;
     	let chunks;
+    	let weekRect;
     	let height;
     	let width;
+    	let weekDayLabel;
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*cellSize, cellGap*/ 3) {
-    			 $$invalidate(4, cellRect = cellSize + cellGap);
+    			 $$invalidate(9, cellRect = cellSize + cellGap);
     		}
 
-    		if ($$self.$$.dirty & /*allowOverflow, colors, data, emptyColor, endDate, startDate, view*/ 16136) {
-    			 $$invalidate(14, calendar = getCalendar({
+    		if ($$self.$$.dirty & /*allowOverflow, colors, data, emptyColor, endDate, startDate, view*/ 1032448) {
+    			 $$invalidate(20, calendar = getCalendar({
     				allowOverflow,
     				colors,
     				data,
@@ -1264,8 +1420,8 @@
     			}));
     		}
 
-    		if ($$self.$$.dirty & /*view, allowOverflow, calendar, endDate, startDate*/ 28936) {
-    			 $$invalidate(5, chunks = view === "monthly"
+    		if ($$self.$$.dirty & /*view, allowOverflow, calendar, endDate, startDate*/ 1851648) {
+    			 $$invalidate(10, chunks = view === "monthly"
     			? chunkMonths({
     					allowOverflow,
     					calendar,
@@ -1280,28 +1436,42 @@
     				}));
     		}
 
-    		if ($$self.$$.dirty & /*view, cellRect, cellGap*/ 25) {
-    			 $$invalidate(6, height = view === "monthly"
-    			? 6 * cellRect - cellGap
-    			: 7 * cellRect - cellGap);
+    		if ($$self.$$.dirty & /*cellRect, cellGap*/ 513) {
+    			 $$invalidate(21, weekRect = 7 * cellRect - cellGap);
     		}
 
-    		if ($$self.$$.dirty & /*view, cellRect, cellGap, monthGap, chunks*/ 61) {
-    			 $$invalidate(7, width = view === "monthly"
-    			? (7 * cellRect - cellGap + monthGap) * chunks.length - monthGap
-    			: cellRect * chunks.length - cellGap);
+    		if ($$self.$$.dirty & /*view, cellRect, cellGap, weekRect*/ 2097921) {
+    			 $$invalidate(11, height = view === "monthly" ? 6 * cellRect - cellGap : weekRect); // <- max of 6 rows in monthly view
+    		}
+
+    		if ($$self.$$.dirty & /*view, weekRect, monthGap, chunks, dayLabelWidth, cellRect, cellGap*/ 2099077) {
+    			 $$invalidate(12, width = view === "monthly"
+    			? (weekRect + monthGap) * chunks.length - monthGap + dayLabelWidth
+    			: cellRect * chunks.length - cellGap + dayLabelWidth);
+    		}
+
+    		if ($$self.$$.dirty & /*cellRect*/ 512) {
+    			 $$invalidate(13, weekDayLabel = index => {
+    				return cellRect * index + cellRect / 2;
+    			});
     		}
     	};
 
     	return [
     		cellGap,
     		cellSize,
+    		dayLabelWidth,
+    		dayLabels,
+    		fontColor,
+    		fontFamily,
+    		fontSize,
     		monthGap,
     		view,
     		cellRect,
     		chunks,
     		height,
     		width,
+    		weekDayLabel,
     		allowOverflow,
     		colors,
     		data,
@@ -1316,16 +1486,21 @@
     		super();
 
     		init(this, options, instance$2, create_fragment$2, safe_not_equal, {
-    			allowOverflow: 8,
+    			allowOverflow: 14,
     			cellGap: 0,
     			cellSize: 1,
-    			colors: 9,
-    			data: 10,
-    			emptyColor: 11,
-    			endDate: 12,
-    			monthGap: 2,
-    			startDate: 13,
-    			view: 3
+    			colors: 15,
+    			data: 16,
+    			dayLabelWidth: 2,
+    			dayLabels: 3,
+    			emptyColor: 17,
+    			endDate: 18,
+    			fontColor: 4,
+    			fontFamily: 5,
+    			fontSize: 6,
+    			monthGap: 7,
+    			startDate: 19,
+    			view: 8
     		});
     	}
     }
