@@ -73,7 +73,7 @@ export let fontFamily = 'sans-serif';
 export let fontSize = 8;
 export let monthGap = 2;
 export let monthLabelHeight = 12;
-export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export let startDate = null;
 export let view = 'weekly';
 
