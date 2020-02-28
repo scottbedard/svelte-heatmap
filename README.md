@@ -51,6 +51,26 @@ Array of CSS colors to use for the chart, ordered from lowest to highest. Defaul
 
 Array of objects containing the chart data. These objects should be in the shape of `{ date, value }`.
 
+##### `dayLabelWidth`
+
+Horizontal space to allocate for day labels. If this is `0`, day labels will not be rendered.
+
+##### `dayLabels`
+
+Array of strings to use for day labels. Defaults to `['', 'Mon', '', 'Web', '', 'Fri', '']`.
+
+##### `fontColor`
+
+Label font color. Defaults to `#333`.
+
+##### `fontFamily`
+
+Label font family. Defaults to `sans-serif`.
+
+##### `fontSize`
+
+Label font size. Defaults to `8`.
+
 ##### `emptyColor`
 
 CSS color to use for cells with no value.
@@ -58,6 +78,14 @@ CSS color to use for cells with no value.
 ##### `monthGap`
 
 Defines the space between months when `view` is set to `monthly`.
+
+##### `monthLabelHeight`
+
+Vertical space to allocate for month labels. If this is `0`, month labels will not be rendered.
+
+##### `monthLabels`
+
+Array of strings to use for month labels. Defaults to `['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']`.
 
 ##### `startDate`
 
