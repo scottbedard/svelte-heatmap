@@ -15,6 +15,7 @@
             // instantiate component and mount it to the dom
             new Heatmap({
                 props: {
+                    allowOverflow: true,
                     data: [
                         { date: '2019-01-01T00:00:00', value: 3 },
                         { date: '2019-01-24T00:00:00', value: 6 },
@@ -39,7 +40,7 @@
                     monthGap: 10,
                     startDate: '2019-01-20T00:00:00',
                     endDate: '2019-12-31T00:00:00',
-                    view: 'weekly',
+                    view: 'monthly',
                 },
                 target: document.querySelector('#heatmap'),
             });
