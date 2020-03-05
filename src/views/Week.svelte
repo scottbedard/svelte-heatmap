@@ -2,6 +2,7 @@
     {#each days as day, index}
         <Cell
             color={day.color}
+            date={day.date}
             radius={cellRadius}
             size={cellSize}
             y={day.date.getDay() * cellRect}

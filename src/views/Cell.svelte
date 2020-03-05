@@ -1,4 +1,5 @@
 <rect
+    data-date={stringifyDate(date)}
     fill={color}
     height={size}
     rx={radius}
@@ -8,7 +9,10 @@
 />
 
 <script>
+import { stringifyDate } from '../utils/date';
+
 export let color;
+export let date;
 export let radius;
 export let size;
 export let x;

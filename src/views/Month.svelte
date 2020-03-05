@@ -2,6 +2,7 @@
     {#each days as day}
         <Cell
             color={day.color}
+            date={day.date}
             radius={cellRadius}
             size={cellSize}
             x={day.date.getDay() * cellRect}
@@ -16,7 +17,7 @@
             font-size={fontSize}
             x="0"
             y="0">
-            {monthLabels[index]}
+            {monthLabels[days[0].date.getMonth()]}
         </text>
     {/if}
 </g>

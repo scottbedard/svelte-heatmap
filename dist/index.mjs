@@ -351,6 +351,17 @@ function normalizeDate(value) {
 }
 
 /**
+ * Stringify a date.
+ *
+ * @param {Date} date
+ * 
+ * @return {string}
+ */
+function stringifyDate(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+/**
  * Divide a calendar into months.
  *
  * @param {Object}              options
@@ -529,43 +540,49 @@ function getDay({ data, offset, startDate, startDayOfMonth }) {
 
 function create_fragment(ctx) {
 	let rect;
+	let rect_data_date_value;
 
 	return {
 		c() {
 			rect = svg_element("rect");
+			attr(rect, "data-date", rect_data_date_value = stringifyDate(/*date*/ ctx[1]));
 			attr(rect, "fill", /*color*/ ctx[0]);
-			attr(rect, "height", /*size*/ ctx[2]);
-			attr(rect, "rx", /*radius*/ ctx[1]);
-			attr(rect, "width", /*size*/ ctx[2]);
-			attr(rect, "x", /*x*/ ctx[3]);
-			attr(rect, "y", /*y*/ ctx[4]);
+			attr(rect, "height", /*size*/ ctx[3]);
+			attr(rect, "rx", /*radius*/ ctx[2]);
+			attr(rect, "width", /*size*/ ctx[3]);
+			attr(rect, "x", /*x*/ ctx[4]);
+			attr(rect, "y", /*y*/ ctx[5]);
 		},
 		m(target, anchor) {
 			insert(target, rect, anchor);
 		},
 		p(ctx, [dirty]) {
+			if (dirty & /*date*/ 2 && rect_data_date_value !== (rect_data_date_value = stringifyDate(/*date*/ ctx[1]))) {
+				attr(rect, "data-date", rect_data_date_value);
+			}
+
 			if (dirty & /*color*/ 1) {
 				attr(rect, "fill", /*color*/ ctx[0]);
 			}
 
-			if (dirty & /*size*/ 4) {
-				attr(rect, "height", /*size*/ ctx[2]);
+			if (dirty & /*size*/ 8) {
+				attr(rect, "height", /*size*/ ctx[3]);
 			}
 
-			if (dirty & /*radius*/ 2) {
-				attr(rect, "rx", /*radius*/ ctx[1]);
+			if (dirty & /*radius*/ 4) {
+				attr(rect, "rx", /*radius*/ ctx[2]);
 			}
 
-			if (dirty & /*size*/ 4) {
-				attr(rect, "width", /*size*/ ctx[2]);
+			if (dirty & /*size*/ 8) {
+				attr(rect, "width", /*size*/ ctx[3]);
 			}
 
-			if (dirty & /*x*/ 8) {
-				attr(rect, "x", /*x*/ ctx[3]);
+			if (dirty & /*x*/ 16) {
+				attr(rect, "x", /*x*/ ctx[4]);
 			}
 
-			if (dirty & /*y*/ 16) {
-				attr(rect, "y", /*y*/ ctx[4]);
+			if (dirty & /*y*/ 32) {
+				attr(rect, "y", /*y*/ ctx[5]);
 			}
 		},
 		i: noop,
@@ -578,6 +595,7 @@ function create_fragment(ctx) {
 
 function instance($$self, $$props, $$invalidate) {
 	let { color } = $$props;
+	let { date } = $$props;
 	let { radius } = $$props;
 	let { size } = $$props;
 	let { x } = $$props;
@@ -585,19 +603,28 @@ function instance($$self, $$props, $$invalidate) {
 
 	$$self.$set = $$props => {
 		if ("color" in $$props) $$invalidate(0, color = $$props.color);
-		if ("radius" in $$props) $$invalidate(1, radius = $$props.radius);
-		if ("size" in $$props) $$invalidate(2, size = $$props.size);
-		if ("x" in $$props) $$invalidate(3, x = $$props.x);
-		if ("y" in $$props) $$invalidate(4, y = $$props.y);
+		if ("date" in $$props) $$invalidate(1, date = $$props.date);
+		if ("radius" in $$props) $$invalidate(2, radius = $$props.radius);
+		if ("size" in $$props) $$invalidate(3, size = $$props.size);
+		if ("x" in $$props) $$invalidate(4, x = $$props.x);
+		if ("y" in $$props) $$invalidate(5, y = $$props.y);
 	};
 
-	return [color, radius, size, x, y];
+	return [color, date, radius, size, x, y];
 }
 
 class Cell extends SvelteComponent {
 	constructor(options) {
 		super();
-		init(this, options, instance, create_fragment, safe_not_equal, { color: 0, radius: 1, size: 2, x: 3, y: 4 });
+
+		init(this, options, instance, create_fragment, safe_not_equal, {
+			color: 0,
+			date: 1,
+			radius: 2,
+			size: 3,
+			x: 4,
+			y: 5
+		});
 	}
 }
 
@@ -616,10 +643,11 @@ function create_each_block(ctx) {
 	const cell = new Cell({
 			props: {
 				color: /*day*/ ctx[13].color,
+				date: /*day*/ ctx[13].date,
 				radius: /*cellRadius*/ ctx[0],
 				size: /*cellSize*/ ctx[2],
 				x: /*day*/ ctx[13].date.getDay() * /*cellRect*/ ctx[1],
-				y: getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[8]
+				y: getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[7]
 			}
 		});
 
@@ -634,10 +662,11 @@ function create_each_block(ctx) {
 		p(ctx, dirty) {
 			const cell_changes = {};
 			if (dirty & /*days*/ 8) cell_changes.color = /*day*/ ctx[13].color;
+			if (dirty & /*days*/ 8) cell_changes.date = /*day*/ ctx[13].date;
 			if (dirty & /*cellRadius*/ 1) cell_changes.radius = /*cellRadius*/ ctx[0];
 			if (dirty & /*cellSize*/ 4) cell_changes.size = /*cellSize*/ ctx[2];
 			if (dirty & /*days, cellRect*/ 10) cell_changes.x = /*day*/ ctx[13].date.getDay() * /*cellRect*/ ctx[1];
-			if (dirty & /*days, cellRect, monthLabelHeight*/ 266) cell_changes.y = getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[8];
+			if (dirty & /*days, cellRect, monthLabelHeight*/ 138) cell_changes.y = getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[7];
 			cell.$set(cell_changes);
 		},
 		i(local) {
@@ -655,10 +684,10 @@ function create_each_block(ctx) {
 	};
 }
 
-// (11:4) {#if monthLabelHeight > 0}
+// (12:4) {#if monthLabelHeight > 0}
 function create_if_block(ctx) {
 	let text_1;
-	let t_value = /*monthLabels*/ ctx[9][/*index*/ ctx[7]] + "";
+	let t_value = /*monthLabels*/ ctx[8][/*days*/ ctx[3][0].date.getMonth()] + "";
 	let t;
 
 	return {
@@ -677,7 +706,7 @@ function create_if_block(ctx) {
 			append(text_1, t);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*monthLabels, index*/ 640 && t_value !== (t_value = /*monthLabels*/ ctx[9][/*index*/ ctx[7]] + "")) set_data(t, t_value);
+			if (dirty & /*monthLabels, days*/ 264 && t_value !== (t_value = /*monthLabels*/ ctx[8][/*days*/ ctx[3][0].date.getMonth()] + "")) set_data(t, t_value);
 
 			if (dirty & /*fontColor*/ 16) {
 				attr(text_1, "fill", /*fontColor*/ ctx[4]);
@@ -713,7 +742,7 @@ function create_fragment$1(ctx) {
 		each_blocks[i] = null;
 	});
 
-	let if_block = /*monthLabelHeight*/ ctx[8] > 0 && create_if_block(ctx);
+	let if_block = /*monthLabelHeight*/ ctx[7] > 0 && create_if_block(ctx);
 
 	return {
 		c() {
@@ -725,7 +754,7 @@ function create_fragment$1(ctx) {
 
 			each_1_anchor = empty();
 			if (if_block) if_block.c();
-			attr(g, "transform", g_transform_value = `translate(${/*translation*/ ctx[10]}, 0)`);
+			attr(g, "transform", g_transform_value = `translate(${/*translation*/ ctx[9]}, 0)`);
 		},
 		m(target, anchor) {
 			insert(target, g, anchor);
@@ -739,7 +768,7 @@ function create_fragment$1(ctx) {
 			current = true;
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*days, cellRadius, cellSize, cellRect, getWeekIndex, monthLabelHeight*/ 271) {
+			if (dirty & /*days, cellRadius, cellSize, cellRect, getWeekIndex, monthLabelHeight*/ 143) {
 				each_value = /*days*/ ctx[3];
 				let i;
 
@@ -766,7 +795,7 @@ function create_fragment$1(ctx) {
 				check_outros();
 			}
 
-			if (/*monthLabelHeight*/ ctx[8] > 0) {
+			if (/*monthLabelHeight*/ ctx[7] > 0) {
 				if (if_block) {
 					if_block.p(ctx, dirty);
 				} else {
@@ -779,7 +808,7 @@ function create_fragment$1(ctx) {
 				if_block = null;
 			}
 
-			if (!current || dirty & /*translation*/ 1024 && g_transform_value !== (g_transform_value = `translate(${/*translation*/ ctx[10]}, 0)`)) {
+			if (!current || dirty & /*translation*/ 512 && g_transform_value !== (g_transform_value = `translate(${/*translation*/ ctx[9]}, 0)`)) {
 				attr(g, "transform", g_transform_value);
 			}
 		},
@@ -824,7 +853,7 @@ function instance$1($$self, $$props, $$invalidate) {
 	let { monthLabels } = $$props;
 
 	$$self.$set = $$props => {
-		if ("cellGap" in $$props) $$invalidate(11, cellGap = $$props.cellGap);
+		if ("cellGap" in $$props) $$invalidate(10, cellGap = $$props.cellGap);
 		if ("cellRadius" in $$props) $$invalidate(0, cellRadius = $$props.cellRadius);
 		if ("cellRect" in $$props) $$invalidate(1, cellRect = $$props.cellRect);
 		if ("cellSize" in $$props) $$invalidate(2, cellSize = $$props.cellSize);
@@ -832,17 +861,17 @@ function instance$1($$self, $$props, $$invalidate) {
 		if ("fontColor" in $$props) $$invalidate(4, fontColor = $$props.fontColor);
 		if ("fontFamily" in $$props) $$invalidate(5, fontFamily = $$props.fontFamily);
 		if ("fontSize" in $$props) $$invalidate(6, fontSize = $$props.fontSize);
-		if ("index" in $$props) $$invalidate(7, index = $$props.index);
+		if ("index" in $$props) $$invalidate(11, index = $$props.index);
 		if ("monthGap" in $$props) $$invalidate(12, monthGap = $$props.monthGap);
-		if ("monthLabelHeight" in $$props) $$invalidate(8, monthLabelHeight = $$props.monthLabelHeight);
-		if ("monthLabels" in $$props) $$invalidate(9, monthLabels = $$props.monthLabels);
+		if ("monthLabelHeight" in $$props) $$invalidate(7, monthLabelHeight = $$props.monthLabelHeight);
+		if ("monthLabels" in $$props) $$invalidate(8, monthLabels = $$props.monthLabels);
 	};
 
 	let translation;
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*cellRect, cellGap, monthGap, index*/ 6274) {
-			 $$invalidate(10, translation = (7 * cellRect - cellGap + monthGap) * index);
+		if ($$self.$$.dirty & /*cellRect, cellGap, monthGap, index*/ 7170) {
+			 $$invalidate(9, translation = (7 * cellRect - cellGap + monthGap) * index);
 		}
 	};
 
@@ -854,11 +883,11 @@ function instance$1($$self, $$props, $$invalidate) {
 		fontColor,
 		fontFamily,
 		fontSize,
-		index,
 		monthLabelHeight,
 		monthLabels,
 		translation,
 		cellGap,
+		index,
 		monthGap
 	];
 }
@@ -868,7 +897,7 @@ class Month extends SvelteComponent {
 		super();
 
 		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
-			cellGap: 11,
+			cellGap: 10,
 			cellRadius: 0,
 			cellRect: 1,
 			cellSize: 2,
@@ -876,10 +905,10 @@ class Month extends SvelteComponent {
 			fontColor: 4,
 			fontFamily: 5,
 			fontSize: 6,
-			index: 7,
+			index: 11,
 			monthGap: 12,
-			monthLabelHeight: 8,
-			monthLabels: 9
+			monthLabelHeight: 7,
+			monthLabels: 8
 		});
 	}
 }
@@ -900,6 +929,7 @@ function create_each_block$1(ctx) {
 	const cell = new Cell({
 			props: {
 				color: /*day*/ ctx[7].color,
+				date: /*day*/ ctx[7].date,
 				radius: /*cellRadius*/ ctx[0],
 				size: /*cellSize*/ ctx[2],
 				y: /*day*/ ctx[7].date.getDay() * /*cellRect*/ ctx[1]
@@ -917,6 +947,7 @@ function create_each_block$1(ctx) {
 		p(ctx, dirty) {
 			const cell_changes = {};
 			if (dirty & /*days*/ 8) cell_changes.color = /*day*/ ctx[7].color;
+			if (dirty & /*days*/ 8) cell_changes.date = /*day*/ ctx[7].date;
 			if (dirty & /*cellRadius*/ 1) cell_changes.radius = /*cellRadius*/ ctx[0];
 			if (dirty & /*cellSize*/ 4) cell_changes.size = /*cellSize*/ ctx[2];
 			if (dirty & /*days, cellRect*/ 10) cell_changes.y = /*day*/ ctx[7].date.getDay() * /*cellRect*/ ctx[1];
