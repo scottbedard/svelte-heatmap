@@ -1,14 +1,11 @@
 <g transform={`translate(${translation}, 0)`}>
     {#each days as day, index}
-        <rect
-            data-date={day.date}
-            data-value={day.value}
-            fill={day.color}
-            height={cellSize}
-            rx={cellRadius}
-            width={cellSize}
+        <Cell
+            color={day.color}
+            radius={cellRadius}
+            size={cellSize}
             x={day.date.getDay() * cellRect}
-            y={(getWeekIndex(day.date) * cellRect )+ monthLabelHeight}
+            y={(getWeekIndex(day.date) * cellRect) + monthLabelHeight}
         />
     {/each}
     {#if monthLabelHeight > 0}
@@ -25,6 +22,7 @@
 </g>
 
 <script>
+import Cell from './Cell.svelte';
 import { getWeekIndex, stringifyDate } from '../utils/date';
 
 $: translation = (((7 * cellRect) - cellGap) + monthGap) * index;

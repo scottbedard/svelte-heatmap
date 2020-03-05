@@ -1,18 +1,16 @@
-<g transform={`translate(${translation}, 0)`}>
+<g transform={`translate(${translation}, ${monthLabelHeight})`}>
     {#each days as day, index}
-        <rect
-            data-date={stringifyDate(day.date)}
-            data-value={day.value}
-            fill={day.color}
-            height={cellSize}
-            rx={cellRadius}
-            width={cellSize}
-            y={index * cellRect}
+        <Cell
+            color={day.color}
+            radius={cellRadius}
+            size={cellSize}
+            y={day.date.getDay() * cellRect}
         />
     {/each}
 </g>
 
 <script>
+import Cell from './Cell.svelte';
 import { stringifyDate } from '../utils/date';
 
 $: translation = cellRect * index;
@@ -22,4 +20,5 @@ export let cellRect;
 export let cellSize;
 export let days;
 export let index;
+export let monthLabelHeight;
 </script>

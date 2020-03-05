@@ -32,15 +32,14 @@
         {/if}
         <g transform={`translate(${dayLabelWidth})`}>
             {#each chunks as chunk, index}
-                <g transform={`translate(0, ${monthLabelHeight})`}>
-                    <Week
-                        cellRadius={cellRadius}
-                        cellRect={cellRect}
-                        cellSize={cellSize}
-                        days={chunk}
-                        index={index}
-                    />
-                </g>
+                <Week
+                    cellRadius={cellRadius}
+                    cellRect={cellRect}
+                    cellSize={cellSize}
+                    days={chunk}
+                    index={index}
+                    monthLabelHeight={monthLabelHeight}
+                />
                 {#if monthLabelHeight > 0 && isNewMonth(chunks, index)}
                     <text
                         alignment-baseline="hanging"
@@ -80,7 +79,7 @@ export let fontColor = '#333';
 export let fontFamily = 'sans-serif';
 export let fontSize = 8;
 export let monthGap = 2;
-export let monthLabelHeight = 10;
+export let monthLabelHeight = 12;
 export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export let startDate = null;
 export let view = 'weekly';
