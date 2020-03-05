@@ -1,6 +1,10 @@
 # svelte-heatmap
 
-This branch is a work in progress, please check back later.
+GitHub style heatmaps for showing values over time.
+
+> **Warning:** This branch is a work in progress, and is not ready for production. Changes may happen at any time.
+
+![Heatmap examples](https://user-images.githubusercontent.com/7980426/75945245-4b82f880-5e5f-11ea-9ae4-42eeae301c69.png)
 
 ## Installation
 
