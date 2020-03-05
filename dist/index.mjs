@@ -606,11 +606,10 @@ class Cell extends SvelteComponent {
 function get_each_context(ctx, list, i) {
 	const child_ctx = ctx.slice();
 	child_ctx[13] = list[i];
-	child_ctx[9] = i;
 	return child_ctx;
 }
 
-// (2:4) {#each days as day, index}
+// (2:4) {#each days as day}
 function create_each_block(ctx) {
 	let current;
 
@@ -620,7 +619,7 @@ function create_each_block(ctx) {
 				radius: /*cellRadius*/ ctx[0],
 				size: /*cellSize*/ ctx[2],
 				x: /*day*/ ctx[13].date.getDay() * /*cellRect*/ ctx[1],
-				y: getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[7]
+				y: getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[8]
 			}
 		});
 
@@ -638,7 +637,7 @@ function create_each_block(ctx) {
 			if (dirty & /*cellRadius*/ 1) cell_changes.radius = /*cellRadius*/ ctx[0];
 			if (dirty & /*cellSize*/ 4) cell_changes.size = /*cellSize*/ ctx[2];
 			if (dirty & /*days, cellRect*/ 10) cell_changes.x = /*day*/ ctx[13].date.getDay() * /*cellRect*/ ctx[1];
-			if (dirty & /*days, cellRect, monthLabelHeight*/ 138) cell_changes.y = getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[7];
+			if (dirty & /*days, cellRect, monthLabelHeight*/ 266) cell_changes.y = getWeekIndex(/*day*/ ctx[13].date) * /*cellRect*/ ctx[1] + /*monthLabelHeight*/ ctx[8];
 			cell.$set(cell_changes);
 		},
 		i(local) {
@@ -659,7 +658,7 @@ function create_each_block(ctx) {
 // (11:4) {#if monthLabelHeight > 0}
 function create_if_block(ctx) {
 	let text_1;
-	let t_value = /*monthLabels*/ ctx[8][/*index*/ ctx[9]] + "";
+	let t_value = /*monthLabels*/ ctx[9][/*index*/ ctx[7]] + "";
 	let t;
 
 	return {
@@ -678,7 +677,7 @@ function create_if_block(ctx) {
 			append(text_1, t);
 		},
 		p(ctx, dirty) {
-			if (dirty & /*monthLabels, index*/ 768 && t_value !== (t_value = /*monthLabels*/ ctx[8][/*index*/ ctx[9]] + "")) set_data(t, t_value);
+			if (dirty & /*monthLabels, index*/ 640 && t_value !== (t_value = /*monthLabels*/ ctx[9][/*index*/ ctx[7]] + "")) set_data(t, t_value);
 
 			if (dirty & /*fontColor*/ 16) {
 				attr(text_1, "fill", /*fontColor*/ ctx[4]);
@@ -714,7 +713,7 @@ function create_fragment$1(ctx) {
 		each_blocks[i] = null;
 	});
 
-	let if_block = /*monthLabelHeight*/ ctx[7] > 0 && create_if_block(ctx);
+	let if_block = /*monthLabelHeight*/ ctx[8] > 0 && create_if_block(ctx);
 
 	return {
 		c() {
@@ -740,7 +739,7 @@ function create_fragment$1(ctx) {
 			current = true;
 		},
 		p(ctx, [dirty]) {
-			if (dirty & /*days, cellRadius, cellSize, cellRect, getWeekIndex, monthLabelHeight*/ 143) {
+			if (dirty & /*days, cellRadius, cellSize, cellRect, getWeekIndex, monthLabelHeight*/ 271) {
 				each_value = /*days*/ ctx[3];
 				let i;
 
@@ -767,7 +766,7 @@ function create_fragment$1(ctx) {
 				check_outros();
 			}
 
-			if (/*monthLabelHeight*/ ctx[7] > 0) {
+			if (/*monthLabelHeight*/ ctx[8] > 0) {
 				if (if_block) {
 					if_block.p(ctx, dirty);
 				} else {
@@ -833,16 +832,16 @@ function instance$1($$self, $$props, $$invalidate) {
 		if ("fontColor" in $$props) $$invalidate(4, fontColor = $$props.fontColor);
 		if ("fontFamily" in $$props) $$invalidate(5, fontFamily = $$props.fontFamily);
 		if ("fontSize" in $$props) $$invalidate(6, fontSize = $$props.fontSize);
-		if ("index" in $$props) $$invalidate(9, index = $$props.index);
+		if ("index" in $$props) $$invalidate(7, index = $$props.index);
 		if ("monthGap" in $$props) $$invalidate(12, monthGap = $$props.monthGap);
-		if ("monthLabelHeight" in $$props) $$invalidate(7, monthLabelHeight = $$props.monthLabelHeight);
-		if ("monthLabels" in $$props) $$invalidate(8, monthLabels = $$props.monthLabels);
+		if ("monthLabelHeight" in $$props) $$invalidate(8, monthLabelHeight = $$props.monthLabelHeight);
+		if ("monthLabels" in $$props) $$invalidate(9, monthLabels = $$props.monthLabels);
 	};
 
 	let translation;
 
 	$$self.$$.update = () => {
-		if ($$self.$$.dirty & /*cellRect, cellGap, monthGap, index*/ 6658) {
+		if ($$self.$$.dirty & /*cellRect, cellGap, monthGap, index*/ 6274) {
 			 $$invalidate(10, translation = (7 * cellRect - cellGap + monthGap) * index);
 		}
 	};
@@ -855,9 +854,9 @@ function instance$1($$self, $$props, $$invalidate) {
 		fontColor,
 		fontFamily,
 		fontSize,
+		index,
 		monthLabelHeight,
 		monthLabels,
-		index,
 		translation,
 		cellGap,
 		monthGap
@@ -877,10 +876,10 @@ class Month extends SvelteComponent {
 			fontColor: 4,
 			fontFamily: 5,
 			fontSize: 6,
-			index: 9,
+			index: 7,
 			monthGap: 12,
-			monthLabelHeight: 7,
-			monthLabels: 8
+			monthLabelHeight: 8,
+			monthLabels: 9
 		});
 	}
 }

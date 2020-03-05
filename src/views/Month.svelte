@@ -1,5 +1,5 @@
 <g transform={`translate(${translation}, 0)`}>
-    {#each days as day, index}
+    {#each days as day}
         <Cell
             color={day.color}
             radius={cellRadius}
