@@ -39,6 +39,10 @@ Renders cells that fall outside the `startDate` to `endDate` range. Defaults to 
 
 Defines the space between cells.
 
+##### `cellRadius`
+
+Defines the radius of each cell. This should be a number relative to the `cellSize`, or a string representing a percentage such as `'50%'`.
+
 ##### `cellSize`
 
 Defines the size of each cell.
