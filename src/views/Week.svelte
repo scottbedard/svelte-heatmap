@@ -5,6 +5,7 @@
             data-value={day.value}
             fill={day.color}
             height={cellSize}
+            rx={cellRadius}
             width={cellSize}
             y={index * cellRect}
         />
@@ -16,6 +17,7 @@ import { stringifyDate } from '../utils/date';
 
 $: translation = cellRect * index;
 
+export let cellRadius;
 export let cellRect;
 export let cellSize;
 export let days;

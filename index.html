@@ -1,48 +1,72 @@
 <html lang="en">
     <head>
         <title>svelte-heatmap</title>
-        <style>
-            #heatmap {
-                margin: 0 auto;
-                max-width: 1024px;
-            }
-        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     </head>
     <body>
-        <div id="heatmap"></div>
+        <div class="max-w-4xl mx-auto p-6">
+            <h1 class="mb-12 text-3xl">svelte-heatmap</h1>
+            <div class="mb-12" id="weekly"></div>
+            <div class="mb-12" id="monthly"></div>
+        </div>
         <script src="./dist/index.js"></script>
         <script>
-            // instantiate component and mount it to the dom
+            /**
+             * Generate a random number.
+             * @param {number} min
+             * @param {number} max
+             * @return {number}
+             */
+            function rand(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            /**
+             * Generate dummy data for a heatmap.
+             * @return {void}
+             */
+            function data() {
+                const data = [];
+                const date = moment().subtract(1, 'year');
+                const now = moment();
+                
+                while (date.isBefore(now)) {
+                    data.push({
+                        date: date.toDate(),
+                        value: rand(0, 10),
+                    });
+
+                    date.add(1, 'day');
+                }
+
+                return data;
+            }
+
+            /**
+             * Examples
+             */
+            new Heatmap({
+                props: {
+                    data: data(),
+                    startDate: moment().subtract(1, 'year').toDate(),
+                    endDate: moment().toDate(),
+                    view: 'weekly',
+                },
+                target: document.querySelector('#weekly'),
+            });
+
             new Heatmap({
                 props: {
                     allowOverflow: true,
-                    data: [
-                        { date: '2019-01-01T00:00:00', value: 3 },
-                        { date: '2019-01-24T00:00:00', value: 6 },
-                        { date: '2019-02-04T00:00:00', value: 4 },
-                        { date: '2019-03-11T00:00:00', value: 11 },
-                        { date: '2019-04-02T00:00:00', value: 2 },
-                        { date: '2019-04-13T00:00:00', value: 5 },
-                        { date: '2019-05-22T00:00:00', value: 8 },
-                        { date: '2019-06-19T00:00:00', value: 6 },
-                        { date: '2019-07-09T00:00:00', value: 3 },
-                        { date: '2019-08-01T00:00:00', value: 0 },
-                        { date: '2019-09-23T00:00:00', value: 12 },
-                        { date: '2019-10-15T00:00:00', value: 2 },
-                        { date: '2019-10-19T00:00:00', value: 5 },
-                        { date: '2019-11-21T00:00:00', value: 2 },
-                        { date: '2019-11-28T00:00:00', value: 4 },
-                        { date: '2019-12-07T00:00:00', value: 17 },
-                        { date: '2019-12-10T00:00:00', value: 13 },
-                        { date: '2019-12-14T00:00:00', value: 9 },
-                        { date: '2019-12-15T00:00:00', value: 14 },
-                    ],
-                    monthGap: 10,
-                    startDate: '2019-01-20T00:00:00',
-                    endDate: '2019-12-31T00:00:00',
+                    cellRadius: '50%',
+                    data: data(),
+                    monthGap: 20,
+                    startDate: moment().subtract(5, 'months').toDate(),
+                    endDate: moment().toDate(),
                     view: 'monthly',
                 },
-                target: document.querySelector('#heatmap'),
+                target: document.querySelector('#monthly'),
             });
         </script>
     </body>

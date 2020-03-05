@@ -3,6 +3,7 @@
         {#each chunks as chunk, index}
             <Month
                 cellGap={cellGap}
+                cellRadius={cellRadius}
                 cellRect={cellRect}
                 cellSize={cellSize}
                 days={chunk}
@@ -33,6 +34,7 @@
             {#each chunks as chunk, index}
                 <g transform={`translate(0, ${monthLabelHeight})`}>
                     <Week
+                        cellRadius={cellRadius}
                         cellRect={cellRect}
                         cellSize={cellSize}
                         days={chunk}
@@ -66,6 +68,7 @@ import Week from './views/Week.svelte';
 
 export let allowOverflow = false;
 export let cellGap = 2;
+export let cellRadius = 0;
 export let cellSize = 10;
 export let colors = ['#c6e48b', '#7bc96f', '#239a3b', '#196127'];
 export let data = [];
@@ -107,7 +110,7 @@ $: height = view === 'monthly'
     : weekRect + monthLabelHeight;
 
 $: width = view === 'monthly'
-    ? ((weekRect + monthGap) * chunks.length) - monthGap + dayLabelWidth
+    ? ((weekRect + monthGap) * chunks.length) - monthGap
     : (cellRect * chunks.length) - cellGap + dayLabelWidth;
 
 $: dayLabelPosition = index => {
