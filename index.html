@@ -9,6 +9,19 @@
             <h1 class="mb-12 text-3xl">svelte-heatmap</h1>
             <div class="mb-12" id="weekly"></div>
             <div class="mb-12" id="monthly"></div>
+
+            <!-- options -->
+            <div class="flex text-sm">
+                <label class="flex items-center">
+                    <input
+                        class="mr-2"
+                        checked="checked"
+                        id="allowOverflow"
+                        type="checkbox"
+                    />
+                    Allow Overflow
+                </label>
+            </div>
         </div>
         <script src="./dist/index.js"></script>
         <script>
@@ -26,7 +39,7 @@
              * Generate dummy data for a heatmap.
              * @return {void}
              */
-            function data() {
+            function generateFakeData() {
                 const data = [];
                 const date = moment().subtract(1, 'year');
                 const now = moment();
@@ -46,9 +59,12 @@
             /**
              * Examples
              */
-            new Heatmap({
+            const fakeData = generateFakeData();
+
+            const weekly = new Heatmap({
                 props: {
-                    data: data(),
+                    allowOverflow: true,
+                    data: fakeData,
                     startDate: moment().subtract(1, 'year').toDate(),
                     endDate: moment().toDate(),
                     view: 'weekly',
@@ -56,17 +72,26 @@
                 target: document.querySelector('#weekly'),
             });
 
-            new Heatmap({
+            const monthly = new Heatmap({
                 props: {
                     allowOverflow: true,
                     cellRadius: '50%',
-                    data: data(),
+                    data: fakeData,
                     monthGap: 20,
                     startDate: moment().subtract(5, 'months').toDate(),
                     endDate: moment().toDate(),
                     view: 'monthly',
                 },
                 target: document.querySelector('#monthly'),
+            });
+
+            /**
+             * Options
+             */
+            document.querySelector('#allowOverflow').addEventListener('change', (e) => {
+                const allowOverflow = e.target.checked;
+                monthly.$set({ allowOverflow });
+                weekly.$set({ allowOverflow });
             });
         </script>
     </body>
