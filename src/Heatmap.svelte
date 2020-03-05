@@ -86,12 +86,14 @@ export let view = 'weekly';
 
 const isNewMonth = (chunks, index) => {
     const chunk = chunks[index];
-    const prevChunk = chunks[index - 1];
+    const prev = chunks[index - 1];
 
-    return prevChunk &&
-        prevChunk.length &&
+    return !prev || (
+        index < chunks.length - 1 &&
+        prev.length &&
         chunk.length &&
-        chunk[0].date.getMonth() > prevChunk[0].date.getMonth();
+        chunk[0].date.getMonth() > prev[0].date.getMonth()
+    );
 }
 
 $: cellRect = cellSize + cellGap;

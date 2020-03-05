@@ -1682,8 +1682,8 @@
 
     	const isNewMonth = (chunks, index) => {
     		const chunk = chunks[index];
-    		const prevChunk = chunks[index - 1];
-    		return prevChunk && prevChunk.length && chunk.length && chunk[0].date.getMonth() > prevChunk[0].date.getMonth();
+    		const prev = chunks[index - 1];
+    		return !prev || index < chunks.length - 1 && prev.length && chunk.length && chunk[0].date.getMonth() > prev[0].date.getMonth();
     	};
 
     	$$self.$set = $$props => {
