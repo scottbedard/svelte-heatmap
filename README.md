@@ -72,7 +72,7 @@ Defines the size of each cell.
 
 ##### `colors`
 
-Array of CSS colors to use for the chart, ordered from lowest to highest. Default colors match the GitHub contribution graph.
+Array of CSS colors to use for the chart, ordered from lowest to highest. Default colors match GitHub's contribution graph with `['#c6e48b', '#7bc96f', '#239a3b', '#196127']`.
 
 ##### `data`
 
