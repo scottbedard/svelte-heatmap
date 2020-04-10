@@ -10,6 +10,7 @@
     "@rollup/plugin-node-resolve": "^6.0.0",
     "babel-jest": "^25.3.0",
     "consola": "^2.11.3",
+    "fs-extra": "^9.0.0",
     "jest": "^25.3.0",
     "rollup": "^1.32.1",
     "rollup-plugin-babel": "^4.4.0",
@@ -36,6 +37,7 @@
   "svelte": "src/index.js",
   "scripts": {
     "build": "rollup -c",
+    "publish:ci": "node ./scripts/publish.js",
     "test": "jest",
     "watch": "rollup -c -w"
   },
