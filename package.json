@@ -26,8 +26,8 @@
     "svelte"
   ],
   "license": "MIT",
-  "main": "index.js",
-  "module": "index.esm.js",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
   "name": "svelte-heatmap",
   "repository": {
     "type": "git",
@@ -36,10 +36,9 @@
   "svelte": "src/index.js",
   "scripts": {
     "build": "rollup -c",
-    "publish": "node ./scripts/publish.js",
     "test": "jest",
     "watch": "rollup -c -w"
   },
-  "unpkg": "index.umd.min.js",
+  "unpkg": "dist/index.umd.min.js",
   "version": "1.0.0-beta.0"
 }
