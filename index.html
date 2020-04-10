@@ -47,7 +47,7 @@
                 while (date.isBefore(now)) {
                     data.push({
                         date: date.toDate(),
-                        value: rand(0, 10),
+                        value: rand(0, 4),
                     });
 
                     date.add(1, 'day');
@@ -65,8 +65,8 @@
                 props: {
                     allowOverflow: true,
                     data: fakeData,
-                    startDate: moment().subtract(1, 'year').toDate(),
                     endDate: moment().toDate(),
+                    startDate: moment().subtract(1, 'year').toDate(),
                     view: 'weekly',
                 },
                 target: document.querySelector('#weekly'),
@@ -76,7 +76,9 @@
                 props: {
                     allowOverflow: true,
                     cellRadius: '50%',
+                    colors: ['#a1dab4', '#42b6c4', '#2c7fb9', '#263494'],
                     data: fakeData,
+                    emptyColor: '#ecedf0',
                     monthGap: 20,
                     startDate: moment().subtract(5, 'months').toDate(),
                     endDate: moment().toDate(),
