@@ -23,7 +23,7 @@
                 </label>
             </div>
         </div>
-        <script src="./dist/index.js"></script>
+        <script src="./dist/index.umd.js"></script>
         <script>
             /**
              * Generate a random number.
@@ -61,7 +61,7 @@
              */
             const fakeData = generateFakeData();
 
-            const weekly = new Heatmap({
+            const weekly = new SvelteHeatmap({
                 props: {
                     allowOverflow: true,
                     data: fakeData,
@@ -72,7 +72,7 @@
                 target: document.querySelector('#weekly'),
             });
 
-            const monthly = new Heatmap({
+            const monthly = new SvelteHeatmap({
                 props: {
                     allowOverflow: true,
                     cellRadius: '50%',
