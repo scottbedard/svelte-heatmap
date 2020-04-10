@@ -88,11 +88,19 @@ const isNewMonth = (chunks, index) => {
     const chunk = chunks[index];
     const prev = chunks[index - 1];
 
-    return !prev || (
-        index < chunks.length - 1 &&
-        prev.length &&
-        chunk.length &&
-        chunk[0].date.getMonth() > prev[0].date.getMonth()
+    if (!prev) {
+        return true;
+    }
+
+    if (!prev.length || !chunk.length) {
+        return false;
+    }
+
+    const currentIndex = chunk[0].date.getMonth();
+    const prevIndex = prev[0].date.getMonth();
+
+    return index < chunks.length && index < chunks.length - 1 && (
+        currentIndex > prevIndex || currentIndex === 0 && prevIndex === 11
     );
 }
 
