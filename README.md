@@ -6,6 +6,8 @@
 [![NPM](https://img.shields.io/npm/v/svelte-heatmap)](https://www.npmjs.com/package/svelte-heatmap)
 [![License](https://img.shields.io/github/license/scottbedard/svelte-heatmap?color=blue)](https://github.com/scottbedard/svelte-heatmap/blob/master/LICENSE)
 
+A light weight and customizable version of GitHub's contribution graph.
+
 ![Heatmap examples](https://user-images.githubusercontent.com/7980426/78958159-27d55280-7a9c-11ea-9b08-8b5d7df31d7a.png)
 
 ## 📦 Installation

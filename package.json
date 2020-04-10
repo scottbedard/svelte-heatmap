@@ -3,7 +3,7 @@
   "bugs": {
     "url": "https://github.com/scottbedard/svelte-heatmap/issues"
   },
-  "description": "A GitHub style heatmap made with Svelte.js",
+  "description": "A light weight and customizable version of GitHub's contribution graph",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
