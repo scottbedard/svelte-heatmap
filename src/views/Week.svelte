@@ -5,6 +5,7 @@
             date={day.date}
             radius={cellRadius}
             size={cellSize}
+            value={day.value}
             y={day.date.getDay() * cellRect}
         />
     {/each}

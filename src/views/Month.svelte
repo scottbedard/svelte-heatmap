@@ -5,6 +5,7 @@
             date={day.date}
             radius={cellRadius}
             size={cellSize}
+            value={day.value}
             x={day.date.getDay() * cellRect}
             y={(getWeekIndex(day.date) * cellRect) + monthLabelHeight}
         />
