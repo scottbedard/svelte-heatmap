@@ -3,6 +3,7 @@
 [![Build status](https://img.shields.io/github/workflow/status/scottbedard/svelte-heatmap/Test)](https://github.com/scottbedard/svelte-heatmap/actions)
 [![Dependencies](https://img.shields.io/david/scottbedard/svelte-heatmap)](https://david-dm.org/scottbedard/svelte-heatmap)
 [![Dev dependencies](https://img.shields.io/david/dev/scottbedard/svelte-heatmap)](https://david-dm.org/scottbedard/svelte-heatmap?type=dev)
+[![Size](https://img.shields.io/bundlephobia/minzip/svelte-heatmap?color=yellow&label=size)](https://bundlephobia.com/result?p=svelte-heatmap)
 [![NPM](https://img.shields.io/npm/v/svelte-heatmap)](https://www.npmjs.com/package/svelte-heatmap)
 [![License](https://img.shields.io/github/license/scottbedard/svelte-heatmap?color=blue)](https://github.com/scottbedard/svelte-heatmap/blob/master/LICENSE)
 
