@@ -8,22 +8,36 @@ GitHub style heatmaps for showing values over time.
 
 ## Installation
 
-Soon...
+The recommended way to install this package is through NPM.
+
+```bash
+npm install svelte-heatmap
+```
+
+Alternatively, you use this script tag to install via the CDN. When choosing the CDN, the package will be exposed globally as `SvelteHeatmap`.
+
+```html
+<script src="https://unpkg.com/svelte-heatmap"></script>
+```
 
 ## Basic usage
 
-To create a heatmap, pass `props` and a `target` to the `Heatmap` constructor.
+To create a heatmap, pass `props` and a `target` to the `SvelteHeatmap` constructor.
 
 ```js
-const heatmap = new Heatmap({
+import SvelteHeatmap from 'svelte-heatmap';
+
+const heatmap = new SvelteHeatmap({
     props: {
-        // ...
+        data: [
+            // ...
+        ],
     },
     target: '#some-container',
 });
 ```
 
-To remove the component, call `$destroy`. This will remove all elements from the DOM and unbind any event listeners.
+To remove the component, call `$destroy`.
 
 ```js
 heatmap.$destroy();
