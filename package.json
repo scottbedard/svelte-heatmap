@@ -42,5 +42,5 @@
     "watch": "rollup -c -w"
   },
   "unpkg": "dist/index.umd.min.js",
-  "version": "1.0.0-beta.1"
+  "version": "1.0.0-beta.2"
 }
