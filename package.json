@@ -1,28 +1,9 @@
 {
-  "name": "svelte-heatmap",
-  "description": "A GitHub style heatmap made with Svelte.js",
   "author": "Scott Bedard",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "svelte": "src/index.js",
   "bugs": {
     "url": "https://github.com/scottbedard/svelte-heatmap/issues"
   },
-  "homepage": "https://github.com/scottbedard/svelte-heatmap",
-  "keywords": [
-    "svelte"
-  ],
-  "files": [
-    "src",
-    "dist"
-  ],
-  "scripts": {
-    "build": "rollup -c",
-    "prepublishOnly": "npm run build",
-    "test": "jest",
-    "watch": "rollup -c -w"
-  },
+  "description": "A GitHub style heatmap made with Svelte.js",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
@@ -32,11 +13,31 @@
     "rollup": "^1.32.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-svelte": "^5.2.1",
+    "rollup-plugin-uglify": "^6.0.4",
     "svelte": "^3.20.1"
   },
-  "version": "1.0.0",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "homepage": "https://github.com/scottbedard/svelte-heatmap",
+  "keywords": [
+    "svelte"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.esm.js",
+  "name": "svelte-heatmap",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/scottbedard/svelte-heatmap.git"
-  }
+  },
+  "svelte": "src/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "jest",
+    "watch": "rollup -c -w"
+  },
+  "unpkg": "index.umd.min.js",
+  "version": "1.0.0-beta.0"
 }
