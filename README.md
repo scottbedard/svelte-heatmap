@@ -1,12 +1,14 @@
 # svelte-heatmap
 
-GitHub style heatmaps for showing values over time.
-
-> **Warning:** This branch is a work in progress, and is not ready for production. Changes may happen at any time.
+[![Build status](https://img.shields.io/github/workflow/status/scottbedard/svelte-heatmap/Test)](https://github.com/scottbedard/svelte-heatmap/actions)
+[![Dependencies](https://img.shields.io/david/scottbedard/svelte-heatmap)](https://david-dm.org/scottbedard/svelte-heatmap)
+[![Dev dependencies](https://img.shields.io/david/dev/scottbedard/svelte-heatmap)](https://david-dm.org/scottbedard/svelte-heatmap?type=dev)
+[![NPM](https://img.shields.io/npm/v/svelte-heatmap)](https://www.npmjs.com/package/svelte-heatmap)
+[![License](https://img.shields.io/github/license/scottbedard/svelte-heatmap?color=blue)](https://github.com/scottbedard/svelte-heatmap/blob/master/LICENSE)
 
 ![Heatmap examples](https://user-images.githubusercontent.com/7980426/78958159-27d55280-7a9c-11ea-9b08-8b5d7df31d7a.png)
 
-## Installation
+## 📦 Installation
 
 The recommended way to install this package is through NPM.
 
@@ -20,7 +22,7 @@ Alternatively, you use this script tag to install via the CDN. When choosing the
 <script src="https://unpkg.com/svelte-heatmap"></script>
 ```
 
-## Basic usage
+## 🚀 Basic usage
 
 To create a heatmap, pass `props` and a `target` to the `SvelteHeatmap` constructor.
 
@@ -45,9 +47,9 @@ heatmap.$destroy();
 
 See the [Svelte documentation](https://svelte.dev/docs#Client-side_component_API) for more information. 
 
-## Props
+## ⚙️ Options
 
-Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a `string` or `number` compatible with the Date constructor.
+> **Note:** Date values for `data`, `startDate`, and `endDate` should be [JavaScript `Date` objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) objects, or a value compatible with the Date constructor.
 
 ##### `allowOverflow`
 
@@ -121,7 +123,7 @@ Date object represending the last day of the graph. If omitted, this will defaul
 
 Determines how the chart should be displayed. Supported values are `monthly` and `yearly`, defaults to `yearly`.
 
-## License
+## 📄 License
 
 [MIT](https://github.com/scottbedard/svelte-heatmap/blob/master/LICENSE)
 
