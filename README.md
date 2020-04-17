@@ -19,7 +19,7 @@ The recommended way to install this package is through NPM.
 npm install svelte-heatmap
 ```
 
-Alternatively, you use this script tag to install via the CDN. When choosing the CDN, the package will be exposed globally as `SvelteHeatmap`.
+Alternatively, you may access it via the CDN. When using the CDN, this package will be exposed globally as `SvelteHeatmap`.
 
 ```html
 <script src="https://unpkg.com/svelte-heatmap"></script>
