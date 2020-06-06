@@ -71,7 +71,7 @@ describe('date utils', () => {
     //
     // getWeekIndex
     //
-    describe.only('getWeekIndex', () => {
+    describe('getWeekIndex', () => {
         Object.entries({
             '2020-01-01': 0,
             '2020-01-04': 0,
