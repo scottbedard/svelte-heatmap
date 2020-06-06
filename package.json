@@ -7,14 +7,15 @@
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
-    "babel-jest": "^25.5.1",
+    "@rollup/plugin-node-resolve": "^8.0.1",
+    "babel-jest": "^26.0.1",
     "consola": "^2.12.2",
     "fs-extra": "^9.0.1",
-    "jest": "^25.5.4",
+    "jest": "^26.0.1",
     "rollup": "^2.13.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-svelte": "^5.2.2",
-    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-terser": "^6.1.0",
     "svelte": "^3.23.0"
   },
   "files": [
