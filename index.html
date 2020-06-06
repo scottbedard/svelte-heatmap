@@ -11,15 +11,25 @@
             <div class="mb-12" id="monthly"></div>
 
             <!-- options -->
-            <div class="flex text-sm">
-                <label class="flex items-center">
+            <div class="text-sm">
+                <label class="block mb-4">
+                    Allow Overflow<br />
                     <input
                         class="mr-2"
                         checked="checked"
                         id="allowOverflow"
-                        type="checkbox"
-                    />
-                    Allow Overflow
+                        type="checkbox" />
+                </label>
+
+                <label class="block">
+                    Cell Radius<br />
+                    <input
+                        id="cellRadius"
+                        max="5"
+                        min="0"
+                        step="0.001"
+                        type="range"
+                        value="0" />
                 </label>
             </div>
         </div>
@@ -75,7 +85,6 @@
             const monthly = new SvelteHeatmap({
                 props: {
                     allowOverflow: true,
-                    cellRadius: '50%',
                     colors: ['#a1dab4', '#42b6c4', '#2c7fb9', '#263494'],
                     data: fakeData,
                     emptyColor: '#ecedf0',
@@ -94,6 +103,12 @@
                 const allowOverflow = e.target.checked;
                 monthly.$set({ allowOverflow });
                 weekly.$set({ allowOverflow });
+            });
+
+            document.querySelector('#cellRadius').addEventListener('input', (e) => {
+                const cellRadius = Number(e.target.value);
+                monthly.$set({ cellRadius });
+                weekly.$set({ cellRadius });
             });
         </script>
     </body>
