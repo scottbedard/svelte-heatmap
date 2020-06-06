@@ -6,7 +6,12 @@
     </head>
     <body>
         <div class="max-w-4xl mx-auto p-6">
-            <h1 class="mb-12 text-3xl">svelte-heatmap</h1>
+            <div class="mb-12">
+                <h1 class="text-3xl">svelte-heatmap</h1>
+                <a class="hover:underline" href="https://github.com/scottbedard/svelte-heatmap">
+                    https://github.com/scottbedard/svelte-heatmap
+                </a>
+            </div>
             <div class="mb-12" id="weekly"></div>
             <div class="mb-12" id="monthly"></div>
 
@@ -21,7 +26,18 @@
                         type="checkbox" />
                 </label>
 
-                <label class="block">
+                <label class="block mb-4">
+                    Cell Gap<br />
+                    <input
+                        id="cellGap"
+                        max="5"
+                        min="0"
+                        step="0.001"
+                        type="range"
+                        value="3" />
+                </label>
+
+                <label class="block mb-4">
                     Cell Radius<br />
                     <input
                         id="cellRadius"
@@ -29,8 +45,14 @@
                         min="0"
                         step="0.001"
                         type="range"
-                        value="0" />
+                        value="1" />
                 </label>
+
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    id="seed">
+                    Seed
+                </button>
             </div>
         </div>
         <script src="./dist/index.umd.js"></script>
@@ -70,10 +92,14 @@
              * Examples
              */
             const fakeData = generateFakeData();
+            const cellGap = Number(document.querySelector('#cellGap').value);
+            const cellRadius = Number(document.querySelector('#cellRadius').value);
 
             const weekly = new SvelteHeatmap({
                 props: {
                     allowOverflow: true,
+                    cellGap: cellGap,
+                    cellRadius: cellRadius,
                     data: fakeData,
                     endDate: moment().toDate(),
                     startDate: moment().subtract(1, 'year').toDate(),
@@ -85,6 +111,8 @@
             const monthly = new SvelteHeatmap({
                 props: {
                     allowOverflow: true,
+                    cellGap: cellGap,
+                    cellRadius: cellRadius,
                     colors: ['#a1dab4', '#42b6c4', '#2c7fb9', '#263494'],
                     data: fakeData,
                     emptyColor: '#ecedf0',
@@ -105,10 +133,25 @@
                 weekly.$set({ allowOverflow });
             });
 
+            document.querySelector('#cellGap').addEventListener('input', (e) => {
+                const cellGap = Number(e.target.value);
+                monthly.$set({ cellGap });
+                weekly.$set({ cellGap });
+            });
+
             document.querySelector('#cellRadius').addEventListener('input', (e) => {
                 const cellRadius = Number(e.target.value);
                 monthly.$set({ cellRadius });
                 weekly.$set({ cellRadius });
+            });
+
+            /**
+             * Generate
+             */
+            document.querySelector('#seed').addEventListener('click', () => {
+                const data = generateFakeData();
+                monthly.$set({ data });
+                weekly.$set({ data });
             });
         </script>
     </body>
