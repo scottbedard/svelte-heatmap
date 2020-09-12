@@ -14,7 +14,7 @@
     "jest": "^26.0.1",
     "rollup": "^2.13.1",
     "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-svelte": "^5.2.2",
+    "rollup-plugin-svelte": "^6.0.1",
     "rollup-plugin-terser": "^6.1.0",
     "svelte": "^3.23.0"
   },
