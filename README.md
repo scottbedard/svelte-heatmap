@@ -85,7 +85,7 @@ Horizontal space to allocate for day labels. If this is `0`, day labels will not
 
 ##### `dayLabels`
 
-Array of strings to use for day labels. Defaults to `['', 'Mon', '', 'Web', '', 'Fri', '']`.
+Array of strings to use for day labels. Defaults to `['', 'Mon', '', 'Wed', '', 'Fri', '']`.
 
 ##### `fontColor`
 
