@@ -115,6 +115,10 @@ Vertical space to allocate for month labels. If this is `0`, month labels will n
 
 Array of strings to use for month labels. Defaults to `['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']`.
 
+##### `monthLayout`
+
+An array of possible layout options when `view` is set to `monthly`. The following options are possible (rows x columns): `1x12` (default), `2x6`, `3x4`, `4x3`, `6x2`, `12x1`.
+
 ##### `startDate`
 
 Date object representing the first day of the graph. If omitted, this will default to the first day of the `month` or `year`, based on the current `view`.
