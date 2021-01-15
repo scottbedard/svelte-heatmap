@@ -1,4 +1,4 @@
-<g transform={`translate(${translation}, 0)`}>
+<g transform={`translate(${translationX}, ${translationY})`}>
     {#each days as day}
         <Cell
             color={day.color}
@@ -25,11 +25,14 @@
 
 <script>
 import Cell from './Cell.svelte';
-import { getWeekIndex, stringifyDate } from '../utils/date';
+import { getWeekIndex } from '../utils/date';
 
-$: translation = (((7 * cellRect) - cellGap) + monthGap) * index;
+$: monthHeight = (6 * cellRect) + monthGap + monthLabelHeight
+$: monthWidth = (7 * cellRect) + monthGap
 
-export let cellGap;
+$: translationX = monthWidth * (index % monthCols);
+$: translationY = monthHeight * (Math.floor(index / monthCols));
+
 export let cellRadius;
 export let cellRect;
 export let cellSize;
@@ -41,4 +44,5 @@ export let index;
 export let monthGap;
 export let monthLabelHeight;
 export let monthLabels;
+export let monthCols;
 </script>
