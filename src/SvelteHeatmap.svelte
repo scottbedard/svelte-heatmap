@@ -14,6 +14,7 @@
                 monthGap={monthGap}
                 monthLabelHeight={monthLabelHeight}
                 monthLabels={monthLabels}
+                monthCols={monthCols}
             />
         {/each}
     {:else}
@@ -81,9 +82,18 @@ export let fontSize = 8;
 export let monthGap = 2;
 export let monthLabelHeight = 12;
 export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export let monthLayout = '1x12';
 export let startDate = null;
 export let view = 'weekly';
 
+let monthCols, monthRows
+
+const layout = (l) => {
+    const knownLayouts = ['1x12', '2x6', '3x4', '4x3', '6x2', '12x1']
+    if (!knownLayouts.includes(l)) return { rows: 1, cols: 12};
+    [monthRows, monthCols] = l.split('x')
+    return { rows: monthRows, cols: monthCols }
+}
 const isNewMonth = (chunks, index) => {
     const chunk = chunks[index];
     const prev = chunks[index - 1];
@@ -115,11 +125,18 @@ $: chunks = view === 'monthly'
 $: weekRect = (7 * cellRect) - cellGap;
 
 $: height = view === 'monthly'
-    ? (6 * cellRect) - cellGap + monthLabelHeight // <- max of 6 rows in monthly view
+    ? Math.ceil(chunks.length / layout(monthLayout).cols) * ((6 * cellRect) + monthGap + monthLabelHeight)
     : weekRect + monthLabelHeight;
 
 $: width = view === 'monthly'
-    ? ((weekRect + monthGap) * chunks.length) - monthGap
+    ? ((weekRect + monthGap) * (
+        // for cases where the number of months is less than what is
+        // possible in the layout. think: 5 months in a 1x12 layout,
+        // for example.
+        chunks.length < layout(monthLayout).cols
+            ? chunks.length
+            : layout(monthLayout).cols
+    ))
     : (cellRect * chunks.length) - cellGap + dayLabelWidth;
 
 $: dayLabelPosition = index => {
