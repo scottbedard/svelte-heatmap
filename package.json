@@ -7,7 +7,7 @@
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
-    "@rollup/plugin-node-resolve": "^9.0.0",
+    "@rollup/plugin-node-resolve": "^11.2.1",
     "babel-jest": "^26.0.1",
     "consola": "^2.12.2",
     "fs-extra": "^9.0.1",
