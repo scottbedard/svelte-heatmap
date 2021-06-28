@@ -53,6 +53,16 @@
             {/each}
         </g>
     {/if}
+    {#if displayLegend}
+        <Legend 
+        translateX={width - (colorRange.length + 5) * cellSize}
+        translateY={height - legendHeight / 2}
+        height={legendHeight}
+        colors={colorRange} 
+        {cellSize}
+        {fontFamily}
+        {fontSize}/>
+    {/if}
 </svg>
 
 <script>
@@ -64,6 +74,7 @@ import {
 
 import Month from './views/Month.svelte';
 import Week from './views/Week.svelte';
+import Legend from './views/Legend.svelte';
 
 export let allowOverflow = false;
 export let cellGap = 2;
@@ -83,6 +94,8 @@ export let monthLabelHeight = 12;
 export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export let startDate = null;
 export let view = 'weekly';
+export let displayLegend = true;
+export let legendHeight = 30;
 
 const isNewMonth = (chunks, index) => {
     const chunk = chunks[index];
@@ -114,9 +127,9 @@ $: chunks = view === 'monthly'
 
 $: weekRect = (7 * cellRect) - cellGap;
 
-$: height = view === 'monthly'
+$: height = (view === 'monthly'
     ? (6 * cellRect) - cellGap + monthLabelHeight // <- max of 6 rows in monthly view
-    : weekRect + monthLabelHeight;
+    : weekRect + monthLabelHeight) + (displayLegend? legendHeight: 0);
 
 $: width = view === 'monthly'
     ? ((weekRect + monthGap) * chunks.length) - monthGap
@@ -125,4 +138,6 @@ $: width = view === 'monthly'
 $: dayLabelPosition = index => {
     return (cellRect * index) + (cellRect / 2) + monthLabelHeight;
 }
+
+$: colorRange = [emptyColor, ...colors];
 </script>
