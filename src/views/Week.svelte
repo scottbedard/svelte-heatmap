@@ -7,6 +7,8 @@
             size={cellSize}
             value={day.value}
             y={day.date.getDay() * cellRect}
+            on:hover-cell
+            on:leave-cell
         />
     {/each}
 </g>

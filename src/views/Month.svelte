@@ -8,6 +8,8 @@
             value={day.value}
             x={day.date.getDay() * cellRect}
             y={(getWeekIndex(day.date) * cellRect) + monthLabelHeight}
+            on:hover-cell
+            on:leave-cell
         />
     {/each}
     {#if monthLabelHeight > 0}

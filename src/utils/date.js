@@ -85,3 +85,24 @@ export function normalizeDate(value) {
 export function stringifyDate(date) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 }
+
+/**
+ * Format a date as "yyyy-mm-dd".
+ * 
+ * @param {Date} date 
+ * 
+ * @returns {string}
+ */
+export function formatDate(date) {
+    let d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
