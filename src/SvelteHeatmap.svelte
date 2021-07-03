@@ -1,4 +1,5 @@
-<svg viewBox={`0 0 ${width} ${height}`}>
+<div style="position: relative">
+    <svg viewBox={`0 0 ${width} ${height}`}>
     {#if view === 'monthly'}
         {#each chunks as chunk, index}
             <Month
@@ -14,6 +15,8 @@
                 monthGap={monthGap}
                 monthLabelHeight={monthLabelHeight}
                 monthLabels={monthLabels}
+                on:hover-cell="{event => onHoverCell(event, index)}"
+                on:leave-cell="{() => showTooltip = false}"
             />
         {/each}
     {:else}
@@ -39,6 +42,8 @@
                     days={chunk}
                     index={index}
                     monthLabelHeight={monthLabelHeight}
+                    on:hover-cell="{event => onHoverCell(event, index)}"
+                    on:leave-cell="{() => showTooltip = false}"
                 />
                 {#if monthLabelHeight > 0 && isNewMonth(chunks, index)}
                     <text
@@ -53,7 +58,11 @@
             {/each}
         </g>
     {/if}
-</svg>
+    </svg>
+    {#if showTooltip}
+        <Tooltip {...tooltipPoint}/>
+    {/if}
+</div>
 
 <script>
 import {
@@ -64,6 +73,7 @@ import {
 
 import Month from './views/Month.svelte';
 import Week from './views/Week.svelte';
+import Tooltip from './views/Tooltip.svelte';
 
 export let allowOverflow = false;
 export let cellGap = 2;
@@ -83,6 +93,10 @@ export let monthLabelHeight = 12;
 export let monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export let startDate = null;
 export let view = 'weekly';
+export let enableTooltip = true;
+
+let tooltipPoint;
+let showTooltip = false;
 
 const isNewMonth = (chunks, index) => {
     const chunk = chunks[index];
@@ -125,4 +139,17 @@ $: width = view === 'monthly'
 $: dayLabelPosition = index => {
     return (cellRect * index) + (cellRect / 2) + monthLabelHeight;
 }
+
+let onHoverCell = (event, index) => {
+    if (enableTooltip) {
+        showTooltip = true;
+        tooltipPoint = event.detail;
+        if (view == "weekly") {
+             tooltipPoint.x = dayLabelWidth + cellRect * index;
+        } else {
+            let translation = (((7 * cellRect) - cellGap) + monthGap) * index;
+            tooltipPoint.x += translation;
+        }
+   }
+};
 </script>
