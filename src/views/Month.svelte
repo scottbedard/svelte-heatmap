@@ -1,4 +1,4 @@
-<g transform={`translate(${translation}, 0)`}>
+<g transform={`translate(${translation}, ${fontSize})`}>
     {#each days as day}
         <Cell
             color={day.color}
