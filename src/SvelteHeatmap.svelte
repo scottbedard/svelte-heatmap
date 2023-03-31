@@ -30,7 +30,7 @@
                 </text>
             {/each}
         {/if}
-        <g transform={`translate(${dayLabelWidth})`}>
+        <g transform={`translate(${dayLabelWidth}, ${fontSize})`}>
             {#each chunks as chunk, index}
                 <Week
                     cellRadius={cellRadius}
@@ -115,8 +115,8 @@ $: chunks = view === 'monthly'
 $: weekRect = (7 * cellRect) - cellGap;
 
 $: height = view === 'monthly'
-    ? (6 * cellRect) - cellGap + monthLabelHeight // <- max of 6 rows in monthly view
-    : weekRect + monthLabelHeight;
+    ? (6 * cellRect) - cellGap + monthLabelHeight + fontSize // <- max of 6 rows in monthly view
+    : weekRect + monthLabelHeight + fontSize;
 
 $: width = view === 'monthly'
     ? ((weekRect + monthGap) * chunks.length) - monthGap
